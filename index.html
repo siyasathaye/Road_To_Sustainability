@@ -51,12 +51,13 @@
           <h2>What have we done so far?</h2>
           <p>
             We have built an interactive scatter plot visualizing the tradeoff between actual
-            mileage (km per liter) and CO₂ emissions (g per km) across hundreds of recorded
+            mileage (km per liter) and CO₂ emissions (g per km) across 600 recorded
             vehicle trips. Each data point is color-coded by fuel type: Diesel, Petrol, and
             Hybrid, making it easy to spot how different fuel technologies cluster in the
-            efficiency-emissions space. In addition to that a dropdown filter was implemented that lets
+            efficiency-emissions space. In addition to that, a dropdown filter was implemented that lets
              readers isolate specific vehicle classes (Hatchback, Luxury, MUV, SUV, Sedan) to compare
-            how each category performs.
+            how each category performs. We added notes for users to understand that higher mileage and lower C02 emissions
+            are indicators of high efficiency.
           </p>
         </div>
 
@@ -65,12 +66,14 @@
           <p>
             The most challenging aspect will be designing a narrative flow that guides readers
             through the data without overwhelming them, balancing interactivity with storytelling
-            so the page feels like an explanation rather than just a dashboard. We plan to add
+            so the page feels like an guided explanation rather than just a dashboard with pasted charts. We plan to add
             additional visualizations (such as breakdowns by engine size or manufacturer), and
             linking these charts together so interactions in one update the others will require
             careful state management in D3. Another challenge is making the annotations and
-            callouts meaningful: pointing out genuinely surprising findings (like where hybrids
-            underperform expectations) rather than just labeling obvious clusters. Finally, making
+            callouts meaningful: pointing out surprising findings (like where hybrids
+            underperform expectations) rather than just labeling obvious clusters. With only 600 rows to work with, 
+            we need to be strategic about which columns and relationships to highlight in order to craft a 
+            well thought out project that meets all the requirements. Finally, making
             the experience work well at different screen sizes while keeping the D3 layouts
             responsive will require extra attention to layout design.
           </p>
