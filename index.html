@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road to Sustainability</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">DSC 106 Final Project Prototype</p>
+        <h1>Road to Sustainability: Understanding Vehicle Efficiency and CO₂ Emissions</h1>
+        <p class="team">
+          Team Members: Siya Sathaye, Juee Deshmukh, Sahar Zahir, Arushi Patra
+        </p>
+        <p class="intro">
+          This prototype explores how everyday vehicle choices shape fuel efficiency and carbon
+          emissions. We focus on the tradeoff between mileage and pollution output so readers can
+          quickly compare vehicle groups instead of scanning raw tables. The broader goal is to
+          turn transportation sustainability into something concrete, visual, and easier to reason
+          about.
+        </p>
+      </header>
 
+      <section class="controls-card">
+        <div>
+          <h2>Mileage vs. CO₂ Emissions</h2>
+          <p>
+            Each circle represents one recorded trip. Higher mileage is better, while lower CO₂ per
+            kilometer is better. Use the filter to compare how different vehicle classes cluster.
+          </p>
+        </div>
+        <label class="filter">
+          <span>Filter by vehicle type</span>
+          <select id="vehicle-filter" aria-label="Filter visualization by vehicle type">
+            <option value="All">All vehicle types</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="chart-card">
+        <div id="chart"></div>
+        <div id="tooltip" class="tooltip" hidden></div>
+      </section>
+    </main>
+  </body>
+</html>

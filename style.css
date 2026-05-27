@@ -1,1 +1,184 @@
+:root {
+  --bg: #f3efe6;
+  --panel: #fffaf2;
+  --ink: #1f2a1f;
+  --muted: #5b6658;
+  --line: #d9cfbf;
+  --accent: #3a6b49;
+  --accent-soft: #dfeadf;
+  --shadow: 0 18px 45px rgba(63, 57, 42, 0.12);
+}
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(97, 146, 103, 0.18), transparent 26%),
+    linear-gradient(180deg, #f7f2e8 0%, var(--bg) 55%, #efe7db 100%);
+}
+
+.page-shell {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 40px 0 64px;
+}
+
+.hero,
+.controls-card,
+.chart-card {
+  background: var(--panel);
+  border: 1px solid rgba(124, 109, 84, 0.14);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  padding: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+h1 {
+  max-width: 900px;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+}
+
+h2 {
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
+}
+
+.team,
+.intro,
+.controls-card p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.team {
+  margin: 18px 0 10px;
+}
+
+.intro {
+  max-width: 840px;
+  margin: 0;
+}
+
+.controls-card {
+  margin-top: 24px;
+  padding: 24px 28px;
+  display: flex;
+  gap: 24px;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.controls-card p {
+  max-width: 700px;
+  margin: 10px 0 0;
+}
+
+.filter {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.filter select {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+.chart-card {
+  margin-top: 24px;
+  padding: 18px 18px 8px;
+  position: relative;
+}
+
+#chart {
+  width: 100%;
+}
+
+.axis text,
+.axis-label,
+.legend text {
+  fill: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.axis path,
+.axis line {
+  stroke: #b9b09f;
+}
+
+.dot {
+  stroke: rgba(31, 42, 31, 0.35);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  max-width: 260px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(28, 37, 30, 0.96);
+  color: #f8f5ee;
+  box-shadow: 0 14px 30px rgba(16, 21, 17, 0.28);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.tooltip strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 800px) {
+  .page-shell {
+    width: min(100vw - 20px, 1120px);
+    padding-top: 20px;
+  }
+
+  .hero,
+  .controls-card,
+  .chart-card {
+    border-radius: 18px;
+  }
+
+  .hero,
+  .controls-card {
+    padding: 20px;
+  }
+
+  .controls-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
