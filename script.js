@@ -178,7 +178,19 @@ function drawLegend(fuelTypes) {
 }
 
 function moveTooltip(event) {
+  const card = document.querySelector(".chart-card");
+  const rect = card.getBoundingClientRect();
+  const tipW = 270;
+
+  let left = event.clientX - rect.left + 16;
+  let top  = event.clientY - rect.top  - 18;
+
+  // flip left if tooltip would overflow the right edge
+  if (left + tipW > rect.width - 8) {
+    left = event.clientX - rect.left - tipW - 12;
+  }
+
   tooltip
-    .style("left", `${event.pageX + 14}px`)
-    .style("top", `${event.pageY - 18}px`);
+    .style("left", `${left}px`)
+    .style("top",  `${top}px`);
 }
