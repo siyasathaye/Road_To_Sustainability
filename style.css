@@ -182,3 +182,20 @@ h2 {
     align-items: stretch;
   }
 }
+
+.writeup-card {
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.writeup-block h2 {
+  margin-bottom: 0.5rem;
+}
+
+.writeup-block p {
+  line-height: 1.7;
+}
