@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road to Sustainability | Scene 3</title>
+    <link rel="stylesheet" href="scene3.css?v=3" />
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <script src="scene3.js?v=3" defer></script>
+  </head>
+  <body>
+    <main class="scene-shell">
+      <header class="scene-hero">
+        <p class="eyebrow">On the road</p>
+        <h1>Trip length changes what efficiency looks like.</h1>
+        <p class="intro">
+          As you scroll from your car's preferred trip length, you can compare it to other trip lengths to see how petrol, diesel, and
+          hybrid shift under each driving context.
+        </p>
+      </header>
+
+      <section class="scene-controls">
+        <div class="panel-copy">
+          <h2>How to read the movement</h2>
+          <p>
+            Each dot is one trip. Dots farther right had better observed mileage. Each row is one
+            fuel type. Dot color shows the efficiency band, and the chart updates as the road moves
+            from your preferred drive to various other trips.
+          </p>
+        </div>
+
+      </section>
+
+      <section class="road-stage">
+        <div class="road-surface" aria-hidden="true">
+          <div class="road-line"></div>
+          <div class="road-line"></div>
+          <div class="road-line"></div>
+        </div>
+
+        <div class="road-layout">
+          <section class="chart-panel">
+            <div class="chart-copy">
+              <p class="chart-kicker" id="chart-kicker">Long trips in focus</p>
+              <h2 id="chart-title">Each row is a fuel type. Each dot is one long trip.</h2>
+              <p id="chart-description">
+                Read left to right for lower to higher mileage. This view is pinned to the
+                hardcoded quiz choice for now.
+              </p>
+              <p class="chart-note">Rows: Petrol, Diesel, Hybrid</p>
+            </div>
+
+            <div class="legend-inline" id="legend-inline" aria-hidden="true"></div>
+            <div id="scene3-chart"></div>
+            <div id="scene3-tooltip" class="tooltip"></div>
+          </section>
+
+          <div class="scroll-track" aria-hidden="true">
+            <section class="road-step is-active" data-trip-category="Long (200–400 km)"></section>
+            <section class="road-step" data-trip-category="Short (<50 km)"></section>
+            <section class="road-step" data-trip-category="Medium (50–200 km)"></section>
+            <section class="road-step" data-trip-category="Very Long (>400 km)"></section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
