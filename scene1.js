@@ -13,6 +13,7 @@
     });
 
     window.STATE.allData = raw;
+    window.notifyAll();
 
     initQuiz();
     revealSignsSequentially();
@@ -33,6 +34,7 @@
 
         btn.classList.add("selected");
         window.STATE[key] = val;
+        window.notifyAll();
 
         // show submit once all three answered
         if (window.STATE.tripCategory && window.STATE.vehicleClass && window.STATE.priority) {
