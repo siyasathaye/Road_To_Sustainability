@@ -1,0 +1,263 @@
+// ─── scene2.js ────────────────────────────────────────────────────────────────
+// Scene 2: "Hitting the Road"
+// Renders a CO₂-per-km vs cost-per-km scatterplot into #scene-2-chart.
+// Reads window.STATE (set by scene1.js) via window.onStateReady().
+// Re-renders cleanly on every notifyAll() call so quiz changes are reflected.
+// ─────────────────────────────────────────────────────────────────────────────
+
+(function () {
+
+  const FUEL_COLORS = {
+    Hybrid:  "#3a6b49",   
+    Diesel:  "#7a6b3a",   
+    Petrol:  "#9b3a2a",   
+  };
+
+  // ── Register with the shared state bus ──────────────────────────────────────
+  window.onStateReady(function (state) {
+    render(state);
+  });
+
+  // ── Main render ─────────────────────────────────────────────────────────────
+  function render(state) {
+    const container = document.getElementById("scene-2-chart");
+    if (!container) return;
+
+    // Clear previous render
+    container.innerHTML = "";
+
+    const data = state.allData;
+    if (!data || data.length === 0) return;
+
+    const chosenClass = state.vehicleClass; // e.g. "SUV" or null before quiz submit
+
+    // ── Dimensions ────────────────────────────────────────────────────────────
+    const totalW  = container.getBoundingClientRect().width || 760;
+    const totalH  = 420;
+    const margin  = { top: 28, right: 32, bottom: 68, left: 72 };
+    const innerW  = totalW - margin.left - margin.right;
+    const innerH  = totalH - margin.top - margin.bottom;
+
+    // ── SVG ───────────────────────────────────────────────────────────────────
+    const svg = d3.select(container)
+      .append("svg")
+        .attr("width",  totalW)
+        .attr("height", totalH);
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // ── Scales ────────────────────────────────────────────────────────────────
+    const xScale = d3.scaleLinear()
+      .domain(d3.extent(data, d => d.co2_per_km)).nice()
+      .range([0, innerW]);
+
+    const yScale = d3.scaleLinear()
+      .domain(d3.extent(data, d => d.cost_per_km_usd)).nice()
+      .range([innerH, 0]);
+
+    // ── Subtle grid ───────────────────────────────────────────────────────────
+    g.append("g")
+      .attr("class", "grid")
+      .call(
+        d3.axisLeft(yScale).ticks(5)
+          .tickSize(-innerW)
+          .tickFormat("")
+      )
+      .call(gg => {
+        gg.select(".domain").remove();
+        gg.selectAll("line")
+          .attr("stroke", "#d9cfbf")
+          .attr("stroke-dasharray", "3 3")
+          .attr("stroke-width", 0.8);
+      });
+
+    // ── Efficiency frontier hint (bottom-left corner label) ───────────────────
+    g.append("line")
+      .attr("class", "frontier-line")
+      .attr("x1", 0)
+      .attr("y1", innerH)
+      .attr("x2", innerW * 0.28)
+      .attr("y2", innerH * 0.18);
+
+    g.append("text")
+      .attr("class", "frontier-label")
+      .attr("x", 6)
+      .attr("y", innerH - 6)
+      .attr("fill", "#5b6658")
+      .attr("font-family", "Georgia, serif")
+      .attr("font-size", "0.75rem")
+      .attr("font-style", "italic")
+      .text("← better (lower cost + lower emissions)");
+
+    // ── Axes ──────────────────────────────────────────────────────────────────
+    // X axis
+    g.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${innerH})`)
+      .call(d3.axisBottom(xScale).ticks(6).tickSize(4));
+
+    g.append("text")
+      .attr("class", "axis-label")
+      .attr("x", innerW / 2)
+      .attr("y", innerH + 52)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#5b6658")
+      .attr("font-family", "Georgia, serif")
+      .attr("font-size", "0.82rem")
+      .text("CO₂ emitted per km (kg)");
+
+    // Y axis
+    g.append("g")
+      .attr("class", "axis")
+      .call(d3.axisLeft(yScale).ticks(5).tickSize(4));
+
+    g.append("text")
+      .attr("class", "axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -(innerH / 2))
+      .attr("y", -56)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#5b6658")
+      .attr("font-family", "Georgia, serif")
+      .attr("font-size", "0.82rem")
+      .text("Fuel cost per km (USD)");
+
+    // ── Dots ──────────────────────────────────────────────────────────────────
+    const dots = g.selectAll(".dot")
+      .data(data)
+      .join("circle")
+        .attr("class", "dot")
+        .attr("cx", d => xScale(d.co2_per_km))
+        .attr("cy", d => yScale(d.cost_per_km_usd))
+        .attr("r", 5)
+        .attr("fill", d => FUEL_COLORS[d.fuel_type] || "#888")
+        .attr("opacity", d => {
+          if (!chosenClass) return 0.65;
+          return d.vehicle_type === chosenClass ? 0.92 : 0.12;
+        })
+        .attr("stroke", d =>
+          chosenClass && d.vehicle_type === chosenClass
+            ? "rgba(31,42,31,0.55)"
+            : "rgba(31,42,31,0.2)"
+        )
+        .attr("stroke-width", d =>
+          chosenClass && d.vehicle_type === chosenClass ? 1.5 : 0.8
+        );
+
+    // ── Tooltip (reuses .tooltip from style.css) ──────────────────────────────
+    const tooltip = d3.select("#scene-2-tooltip");
+
+    dots
+      .on("mouseover", function (event, d) {
+        d3.select(this).attr("r", 8);
+        moveCar(d.co2_per_km);
+
+        tooltip
+          .attr("hidden", null)
+          .style("opacity", "1")
+          .html(`
+            <strong>${d.car_name || d.vehicle_type}</strong>
+            Fuel: ${d.fuel_type}<br>
+            Class: ${d.vehicle_type}<br>
+            CO₂: ${d.co2_per_km.toFixed(3)} kg/km<br>
+            Cost: $${d.cost_per_km_usd.toFixed(4)}/km
+          `);
+      })
+      .on("mousemove", function (event) {
+        // Position tooltip relative to #scene-2-chart container
+        const rect = container.getBoundingClientRect();
+        const ex   = event.clientX - rect.left;
+        const ey   = event.clientY - rect.top;
+        const tipW = 200;
+        const left = ex + 16 + tipW > rect.width ? ex - tipW - 12 : ex + 16;
+
+        tooltip
+          .style("left",  left + "px")
+          .style("top",   (ey - 32) + "px");
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("r", 5);
+        tooltip.style("opacity", "0").attr("hidden", true);
+        carIcon.style("opacity", "0");
+      });
+
+    // ── Animated car icon along x-axis ────────────────────────────────────────
+    const carIcon = g.append("text")
+      .attr("class", "car-icon")
+      .attr("text-anchor", "middle")
+      .attr("y", innerH + 22)
+      .attr("font-size", "18px")
+      .text("🚗")
+      .style("opacity", "0")
+      .style("pointer-events", "none");
+
+    function moveCar(co2Val) {
+      carIcon
+        .style("opacity", "1")
+        .transition().duration(120)
+        .attr("x", xScale(co2Val));
+    }
+
+    // ── Annotation for the chosen vehicle class ───────────────────────────────
+    if (chosenClass) {
+      const selected = data.filter(d => d.vehicle_type === chosenClass);
+      if (selected.length > 0) {
+        const avgX = d3.mean(selected, d => d.co2_per_km);
+        const avgY = d3.mean(selected, d => d.cost_per_km_usd);
+        const ax   = xScale(avgX);
+        const ay   = yScale(avgY);
+
+        // Pick annotation direction to avoid clipping 
+        const flipX = ax > innerW * 0.65;
+        const flipY = ay < innerH * 0.3;
+        const dx    = flipX ? -46 : 46;
+        const dy    = flipY ? 44  : -44;
+
+        g.append("line")
+          .attr("class", "annotation-line")
+          .attr("x1", ax + (flipX ? -6 : 6))
+          .attr("y1", ay + (flipY ? 6 : -6))
+          .attr("x2", ax + dx)
+          .attr("y2", ay + dy);
+
+        g.append("text")
+          .attr("class", "annotation-text")
+          .attr("x", ax + dx + (flipX ? -4 : 4))
+          .attr("y", ay + dy + (flipY ? 14 : -4))
+          .attr("text-anchor", flipX ? "end" : "start")
+          .attr("fill", "#3a6b49")
+          .attr("font-family", "Georgia, serif")
+          .attr("font-size", "0.8rem")
+          .attr("font-weight", "700")
+          .text(`Your pick: ${chosenClass}`);
+      }
+    }
+
+    // ── Legend ────────────────────────────────────────────────────────────────
+    const legendData  = Object.entries(FUEL_COLORS);
+    const legendGroup = svg.append("g")
+      .attr("transform", `translate(${margin.left + 8}, ${margin.top + 6})`);
+
+    legendData.forEach(([label, color], i) => {
+      const row = legendGroup.append("g")
+        .attr("transform", `translate(${i * 88}, 0)`);
+
+      row.append("circle")
+        .attr("r", 5)
+        .attr("cx", 0).attr("cy", 0)
+        .attr("fill", color)
+        .attr("opacity", 0.85)
+        .attr("stroke", "rgba(31,42,31,0.25)")
+        .attr("stroke-width", 1);
+
+      row.append("text")
+        .attr("x", 10).attr("y", 4)
+        .attr("fill", "#5b6658")
+        .attr("font-family", "Georgia, serif")
+        .attr("font-size", "0.8rem")
+        .text(label);
+    });
+  }
+
+})();
