@@ -1,0 +1,84 @@
+/* ─── scene2.css ──────────────────────────────────────────────────────────────
+   Scene 2: Hitting the Road — scatterplot styles
+   Matches the design system in style.css (cream bg, forest green accent,
+   Georgia serif, warm ink palette).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Chart slot sizing ──────────────────────────────────────────────────────── */
+#scene-2-chart {
+  width: 100%;
+  position: relative;         
+}
+
+#scene-2-chart svg {
+  display: block;
+  width: 100%;
+  overflow: visible;           
+}
+
+/* ── Axes ───────────────────────────────────────────────────────────────────── */
+#scene-2-chart .axis text {
+  fill: var(--muted);          
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.78rem;
+}
+
+#scene-2-chart .axis path,
+#scene-2-chart .axis line {
+  stroke: #b9b09f;             
+}
+
+#scene-2-chart .axis-label {
+  fill: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.82rem;
+}
+
+/* ── Dots ───────────────────────────────────────────────────────────────────── */
+#scene-2-chart .dot {
+  stroke: rgba(31, 42, 31, 0.3);
+  stroke-width: 1;
+  transition: r 80ms ease, opacity 80ms ease;
+  cursor: pointer;
+}
+
+/* ── Legend ─────────────────────────────────────────────────────────────────── */
+#scene-2-chart .legend text {
+  fill: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.82rem;
+}
+
+/* ── Annotation ─────────────────────────────────────────────────────────────── */
+#scene-2-chart .annotation-line {
+  stroke: var(--accent);       
+  stroke-dasharray: 4 3;
+}
+
+#scene-2-chart .annotation-text {
+  fill: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* ── Car emoji on x-axis ─────────────────────────────────────────────────────*/
+#scene-2-chart .car-icon {
+  font-size: 18px;
+  pointer-events: none;
+  transition: opacity 100ms ease;
+}
+
+/* ── Efficiency frontier hint line ──────────────────────────────────────────── */
+#scene-2-chart .frontier-line {
+  stroke: var(--line);         
+  stroke-width: 1;
+  stroke-dasharray: 6 4;
+}
+
+#scene-2-chart .frontier-label {
+  fill: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.75rem;
+  font-style: italic;
+}
