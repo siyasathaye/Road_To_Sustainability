@@ -1,84 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Road to Sustainability</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://d3js.org/d3.v7.min.js" defer></script>
-    <script src="script.js" defer></script>
-  </head>
-  <body>
-    <main class="page-shell">
-      <header class="hero">
-        <p class="eyebrow">DSC 106 Final Project Prototype</p>
-        <h1>Road to Sustainability: Understanding Vehicle Efficiency and CO₂ Emissions</h1>
-        <p class="team">
-          Team Members: Siya Sathaye, Juee Deshmukh, Sahar Zahir, Arushi Patra
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Road to Sustainability</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="road.css" />
+  <link rel="stylesheet" href="scroll-road.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCENE 1 — THE DEALERSHIP  (Person 1)
+  ════════════════════════════════════════════════════════════════ -->
+  <section class="scene" id="scene-1">
+    <div class="scene-inner dealership">
+
+      <div class="road-sign headline-sign">
+        <p class="sign-sub">DSC 106 · Road to Sustainability</p>
+        <h1>You're about to buy your<br>first car.</h1>
+        <p class="sign-body">But do you know what it'll <em>actually</em> cost you?</p>
+      </div>
+
+      <!-- Q1 -->
+      <div class="road-sign question-sign" id="q1-sign">
+        <p class="q-number">Question 1 of 3</p>
+        <p class="q-text">What kind of driving do you do?</p>
+        <div class="sign-options" id="q1-options">
+          <button class="sign-btn" data-key="tripCategory" data-val="Short (&lt;50 km)">Short city hops</button>
+          <button class="sign-btn" data-key="tripCategory" data-val="Medium (50–200 km)">Medium trips</button>
+          <button class="sign-btn" data-key="tripCategory" data-val="Long (200–400 km)">Long drives</button>
+          <button class="sign-btn" data-key="tripCategory" data-val="Very Long (&gt;400 km)">Very long hauls</button>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="road-sign question-sign" id="q2-sign">
+        <p class="q-number">Question 2 of 3</p>
+        <p class="q-text">What vehicle class fits your lifestyle?</p>
+        <div class="sign-options" id="q2-options">
+          <button class="sign-btn" data-key="vehicleClass" data-val="Hatchback">Hatchback</button>
+          <button class="sign-btn" data-key="vehicleClass" data-val="Sedan">Sedan</button>
+          <button class="sign-btn" data-key="vehicleClass" data-val="SUV">SUV</button>
+          <button class="sign-btn" data-key="vehicleClass" data-val="Luxury">Luxury</button>
+          <button class="sign-btn" data-key="vehicleClass" data-val="MUV">MUV</button>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="road-sign question-sign" id="q3-sign">
+        <p class="q-number">Question 3 of 3</p>
+        <p class="q-text">What matters more to you?</p>
+        <div class="sign-options" id="q3-options">
+          <button class="sign-btn" data-key="priority" data-val="cost">Lower fuel cost 💰</button>
+          <button class="sign-btn" data-key="priority" data-val="emissions">Lower CO₂ emissions 🌿</button>
+        </div>
+      </div>
+
+      <div id="quiz-error" class="quiz-error" hidden>Please answer all three questions to continue.</div>
+
+      <button class="cta-btn" id="quiz-submit" hidden>
+        Hit the road →
+      </button>
+
+    </div>
+  </section>
+
+  <!-- road lane connecting scene 1 → 2 -->
+  <div class="road-lane" aria-hidden="true">
+    <div class="lane-label">Scene 2 ↓</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCENE 2 — HITTING THE ROAD  (Person 2)
+       Drop your scatterplot into #scene-2-chart
+  ════════════════════════════════════════════════════════════════ -->
+  <section class="scene" id="scene-2">
+    <div class="scene-inner">
+      <div class="scene-header">
+        <span class="scene-tag">Scene 2 · Hitting the Road</span>
+        <h2>Cost vs. Emissions — where does your pick land?</h2>
+        <p class="scene-desc">
+          Each dot is one recorded trip, colored by fuel type.
+          <strong id="s2-highlight-label">Your chosen vehicle class is highlighted.</strong>
+          Better choices sit toward the bottom-left.
         </p>
-        <p class="intro">
-          This prototype explores how everyday vehicle choices shape fuel efficiency and carbon
-          emissions. We focus on the tradeoff between mileage and pollution output so readers can
-          quickly compare vehicle groups instead of scanning raw tables. The broader goal is to
-          turn transportation sustainability into something concrete, visual, and easier to reason
-          about.
+      </div>
+      <!-- Person 2: append your scatterplot SVG here -->
+      <div id="scene-2-chart" class="chart-slot"></div>
+      <div id="scene-2-tooltip" class="tooltip" hidden></div>
+    </div>
+  </section>
+
+  <div class="road-lane" aria-hidden="true">
+    <div class="lane-label">Scene 3 ↓</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCENE 3 — THE JOURNEY  (Person 3)
+       Drop your strip/dot plot into #scene-3-chart
+  ════════════════════════════════════════════════════════════════ -->
+  <section class="scene" id="scene-3">
+    <div class="scene-inner">
+      <div class="scene-header">
+        <span class="scene-tag">Scene 3 · The Journey</span>
+        <h2>How does efficiency shift across trip lengths?</h2>
+        <p class="scene-desc">
+          Each fuel type gets its own lane. Click a lane to isolate it.
+          Dots are individual trips, colored by efficiency band.
         </p>
-      </header>
+      </div>
+      <!-- Person 3: append your strip plot SVG here -->
+      <div id="scene-3-chart" class="chart-slot"></div>
+    </div>
+  </section>
 
-      <section class="controls-card">
-        <div>
-          <h2>Mileage vs. CO₂ Emissions</h2>
-          <p>
-            Each circle represents one recorded trip. Higher mileage is better, while lower CO₂ per
-            kilometer is better. Use the filter to compare how different vehicle classes cluster.
-          </p>
-        </div>
-        <label class="filter">
-          <span>Filter by vehicle type</span>
-          <select id="vehicle-filter" aria-label="Filter visualization by vehicle type">
-            <option value="All">All vehicle types</option>
-          </select>
-        </label>
-      </section>
+  <div class="road-lane crossy-lane" aria-hidden="true">
+    <div class="lane-label">Scene 4 ↓ — watch the road shift</div>
+  </div>
 
-      <section class="chart-card">
-        <div id="chart"></div>
-        <div id="tooltip" class="tooltip" hidden></div>
-      </section>
+  <!-- ═══════════════════════════════════════════════════════════
+       SCENE 4 — THE CROSSROADS  (Person 4)
+       Drop your slope chart into #scene-4-chart
+  ════════════════════════════════════════════════════════════════ -->
+  <section class="scene" id="scene-4">
+    <div class="scene-inner">
+      <div class="scene-header">
+        <span class="scene-tag">Scene 4 · The Crossroads</span>
+        <h2>Cost vs. emissions — across every vehicle class</h2>
+        <p class="scene-desc">
+          Your Scene 1 choice is traced through in
+          <strong id="s4-highlight-label">orange</strong>.
+          See how it compares to every other class on both dimensions.
+        </p>
+      </div>
+      <!-- Person 4: append your slope chart SVG here -->
+      <div id="scene-4-chart" class="chart-slot"></div>
+    </div>
+  </section>
 
-      <section class="writeup-card">
-        <div class="writeup-block">
-          <h2>What have we done so far?</h2>
-          <p>
-            We have built an interactive scatter plot visualizing the tradeoff between actual
-            mileage (km per liter) and CO₂ emissions (g per km) across 600 recorded
-            vehicle trips. Each data point is color-coded by fuel type: Diesel, Petrol, and
-            Hybrid, making it easy to spot how different fuel technologies cluster in the
-            efficiency-emissions space. In addition to that, a dropdown filter was implemented that lets
-             readers isolate specific vehicle classes (Hatchback, Luxury, MUV, SUV, Sedan) to compare
-            how each category performs. We added notes for users to understand that higher mileage and lower C02 emissions
-            are indicators of high efficiency.
-          </p>
-        </div>
+  <div class="road-lane" aria-hidden="true">
+    <div class="lane-label">Scene 5 · Destination ↓</div>
+  </div>
 
-        <div class="writeup-block">
-          <h2>Design Challenges</h2>
-          <p>
-            The most challenging aspect will be designing a narrative flow that guides readers
-            through the data without overwhelming them, balancing interactivity with storytelling
-            so the page feels like an guided explanation rather than just a dashboard with pasted charts. We plan to add
-            additional visualizations (such as breakdowns by engine size or manufacturer), and
-            linking these charts together so interactions in one update the others will require
-            careful state management in D3. Another challenge is making the annotations and
-            callouts meaningful: pointing out surprising findings (like where hybrids
-            underperform expectations) rather than just labeling obvious clusters. With only 600 rows to work with, 
-            we need to be strategic about which columns and relationships to highlight in order to craft a 
-            well thought out project that meets all the requirements. Finally, making
-            the experience work well at different screen sizes while keeping the D3 layouts
-            responsive will require extra attention to layout design.
-          </p>
-        </div>
-      </section>    
-    </main>
-  </body>
+  <!-- ═══════════════════════════════════════════════════════════
+       SCENE 5 — THE DESTINATION  (Person 1)
+  ════════════════════════════════════════════════════════════════ -->
+  <section class="scene" id="scene-5">
+    <div class="scene-inner">
+      <div class="scene-header">
+        <span class="scene-tag">Scene 5 · The Destination</span>
+        <h2>Here's what the data recommends for you.</h2>
+        <p class="scene-desc" id="s5-desc">
+          Based on your choices, here's how your selected class compares to
+          better-performing alternatives — ranked by your stated priority.
+        </p>
+      </div>
+
+      <!-- bar comparison -->
+      <div id="scene-5-bars" class="chart-slot"></div>
+
+      <!-- rec cards -->
+      <div id="rec-cards" class="rec-grid"></div>
+
+      <p class="rec-cta">
+        Want different results?
+        <a href="#scene-1" onclick="resetQuiz()">Restart the quiz ↑</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- writeup — keep for rubric -->
+  <section class="writeup-card page-shell" id="writeup">
+    <div class="writeup-block">
+      <h2>What have we done so far?</h2>
+      <p>
+        We have built an interactive scatter plot visualizing the tradeoff between actual
+        mileage (km per liter) and CO₂ emissions (g per km) across 600 recorded vehicle trips.
+        Each data point is color-coded by fuel type — Diesel, Petrol, and Hybrid — making it
+        easy to spot how different fuel technologies cluster in the efficiency-emissions space.
+        A dropdown filter lets readers isolate specific vehicle classes to compare how each
+        category performs. We also added zoom and pan so users can explore dense clusters, and
+        a tooltip that surfaces the car name, fuel type, mileage, CO₂ value, and trip category
+        on hover. We have now restructured the page around a five-scene scrollytelling narrative
+        and added a quiz that feeds user choices directly into the downstream visualizations.
+      </p>
+    </div>
+    <div class="writeup-block">
+      <h2>Design Challenges</h2>
+      <p>
+        The most challenging aspect will be designing a narrative flow that guides readers
+        through the data without overwhelming them, since we want the page to feel like a
+        guided explanation rather than just a dashboard. Linking all five scenes so that quiz
+        answers in Scene 1 automatically filter and highlight every downstream chart requires
+        careful shared state management in D3. Another challenge is making our annotations
+        genuinely informative — pointing out surprising findings like where hybrids underperform
+        expectations rather than just labeling obvious clusters. With only 600 rows, every chart
+        needs to carry its own weight. Finally, the Crossy Road transition between scenes 3 and 4
+        and responsive D3 layouts across screen sizes will require extra design attention.
+      </p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <strong>Road to Sustainability · DSC 106 · Spring 2026</strong>
+    <span>Siya Sathaye · Juee Deshmukh · Sahar Zahir · Arushi Patra</span>
+  </footer>
+
+  <!-- shared state + Scene 1 + Scene 5 logic -->
+  <script src="state.js"></script>
+  <script src="scene1.js"></script>
+  <script src="scene5.js"></script>
+  <script src="scroll-road.js"></script>
+
+  <!-- teammates drop their files here: -->
+  <!-- <script src="scene2.js"></script> -->
+  <!-- <script src="scene3.js"></script> -->
+  <!-- <script src="scene4.js"></script> -->
+
+</body>
 </html>

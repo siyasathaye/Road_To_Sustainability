@@ -1,0 +1,168 @@
+/* ─── scroll-road.css ────────────────────────────────────────────────────────
+   Scrollytelling road animation — add alongside road.css.
+   A fixed road strip on the left edge scrolls its lane lines as the user
+   moves down the page, giving a "driving through the story" feel.
+   Also animates the existing .road-lane dividers between scenes.
+────────────────────────────────────────────────────────────────────────────── */
+
+/* ── Fixed road strip (left edge) ────────────────────────────────────────── */
+#road-strip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 52px;
+  height: 100vh;
+  background: #252520;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Asphalt texture via repeating noise lines */
+#road-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(255,255,255,0.025) 3px,
+    rgba(255,255,255,0.025) 4px
+  );
+}
+
+/* Centre dashes — animated by JS via --offset custom property */
+#road-strip .lane-dashes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: 6px;
+  height: 200vh; /* extra tall so the seam is never visible */
+  background: repeating-linear-gradient(
+    180deg,
+    #f0d060 0px,
+    #f0d060 28px,
+    transparent 28px,
+    transparent 52px
+  );
+  will-change: transform;
+}
+
+/* Edge reflectors */
+#road-strip .reflector-left,
+#road-strip .reflector-right {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: rgba(255,255,255,0.12);
+}
+#road-strip .reflector-left  { left: 5px; }
+#road-strip .reflector-right { right: 5px; }
+
+/* Speed particles (little lights that blur past) */
+.road-particle {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(240, 208, 96, 0.55);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── Scroll progress bar (top of page) ───────────────────────────────────── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 52px; /* starts right after the road strip */
+  right: 0;
+  height: 3px;
+  background: rgba(240,208,96,0.18);
+  z-index: 51;
+  pointer-events: none;
+}
+
+#scroll-progress-fill {
+  height: 100%;
+  background: #f0d060;
+  width: 0%;
+  transition: width 60ms linear;
+}
+
+/* ── Scene number indicator on the road strip ─────────────────────────────── */
+#road-scene-label {
+  position: fixed;
+  left: 0;
+  bottom: 28px;
+  width: 52px;
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.35);
+  z-index: 52;
+  pointer-events: none;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* ── Offset page content so it doesn't hide behind the strip ─────────────── */
+body {
+  padding-left: 52px;
+}
+
+/* ── Animate the existing .road-lane dividers ─────────────────────────────── */
+.road-lane {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Moving dashes layer — driven by scroll offset */
+.road-lane .scroll-dashes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(240,208,96,0) 0px,
+    rgba(240,208,96,0) 12px,
+    rgba(240,208,96,0.65) 12px,
+    rgba(240,208,96,0.65) 40px,
+    rgba(240,208,96,0) 40px,
+    rgba(240,208,96,0) 52px
+  );
+  will-change: transform;
+}
+
+/* ── Entrance animation for .scene elements ───────────────────────────────── */
+.scene-inner {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.scene-inner.scene-offscreen {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.scene-inner.scene-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Responsive: hide strip on very small screens ─────────────────────────── */
+@media (max-width: 480px) {
+  #road-strip,
+  #scroll-progress,
+  #road-scene-label {
+    display: none;
+  }
+  body {
+    padding-left: 0;
+  }
+}
