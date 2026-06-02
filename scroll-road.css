@@ -12,14 +12,7 @@
   top: 0;
   width: 180px;
   height: 100vh;
-  background:
-  linear-gradient(
-    90deg,
-    rgba(0,0,0,.25) 0%,
-    #252520 15%,
-    #252520 85%,
-    rgba(0,0,0,.25) 100%
-  );
+  background: #252520; 
   z-index: 50;
   overflow: hidden;
   pointer-events: none;
@@ -32,14 +25,7 @@
   top: 0;
   width: 180px;
   height: 100vh;
-  background:
-  linear-gradient(
-    90deg,
-    rgba(0,0,0,.25) 0%,
-    #252520 15%,
-    #252520 85%,
-    rgba(0,0,0,.25) 100%
-  );
+  background: #252520; 
   z-index: 50;
   overflow: hidden;
   pointer-events: none;
