@@ -10,9 +10,16 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 52px;
+  width: 90px;
   height: 100vh;
-  background: #252520;
+  background:
+  linear-gradient(
+    90deg,
+    rgba(0,0,0,.25) 0%,
+    #252520 15%,
+    #252520 85%,
+    rgba(0,0,0,.25) 100%
+  );
   z-index: 50;
   overflow: hidden;
   pointer-events: none;
@@ -23,9 +30,16 @@
   position: fixed;
   right: 0;
   top: 0;
-  width: 52px;
+  width: 90px;
   height: 100vh;
-  background: #252520;
+  background:
+  linear-gradient(
+    90deg,
+    rgba(0,0,0,.25) 0%,
+    #252520 15%,
+    #252520 85%,
+    rgba(0,0,0,.25) 100%
+  );
   z-index: 50;
   overflow: hidden;
   pointer-events: none;
@@ -49,7 +63,7 @@
   left: 50%;
   transform: translateX(-50%);
   top: 0;
-  width: 6px;
+  width: 12px;
   height: 200vh;
   background: repeating-linear-gradient(
     180deg,
@@ -92,14 +106,14 @@
   left: 50%;
   transform: translateX(-50%);
   top: 0;
-  width: 6px;
+  width: 12px;
   height: 200vh; /* extra tall so the seam is never visible */
   background: repeating-linear-gradient(
     180deg,
     #f0d060 0px,
-    #f0d060 28px,
-    transparent 28px,
-    transparent 52px
+    #f0d060 45px,
+    transparent 45px,
+    transparent 80px
   );
   will-change: transform;
 }
@@ -131,8 +145,8 @@
 #scroll-progress {
   position: fixed;
   top: 0;
-  left: 52px; /* starts right after the left road strip */
-  right: 52px; /* ends before the right road strip */
+  left: 90px; /* starts right after the left road strip */
+  right: 90px; /* ends before the right road strip */
   height: 3px;
   background: rgba(240,208,96,0.18);
   z-index: 51;
@@ -151,7 +165,7 @@
   position: fixed;
   left: 0;
   bottom: 28px;
-  width: 52px;
+  width: 90px;
   text-align: center;
   font-family: Georgia, serif;
   font-size: 9px;
@@ -168,7 +182,7 @@
   position: fixed;
   right: 0;
   bottom: 28px;
-  width: 52px;
+  width: 90px;
   text-align: center;
   font-family: Georgia, serif;
   font-size: 9px;
@@ -182,8 +196,8 @@
 
 /* ── Offset page content so it doesn't hide behind either strip ──────────── */
 body {
-  padding-left: 52px;
-  padding-right: 52px;
+  padding-left: 90px;
+  padding-right: 90px;
 }
 
 /* ── Animate the existing .road-lane dividers ─────────────────────────────── */
@@ -240,4 +254,22 @@ body {
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+#road-strip .lane-dashes,
+#road-strip-right .lane-dashes {
+  background-size: 100% 90px;
+}
+
+#road-strip::after,
+#road-strip-right::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  border-left: 2px solid rgba(255,255,255,.18);
+  border-right: 2px solid rgba(255,255,255,.18);
+  pointer-events: none;
 }

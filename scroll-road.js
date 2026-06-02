@@ -147,6 +147,8 @@
   let lastScrollY = window.scrollY;
   let ticking = false;
   let scrollVelocity = 0;
+  let dashCurrent = 0;
+  let dashTarget = 0;
 
   function onScroll() {
     if (!ticking) {
@@ -171,9 +173,12 @@
 
     // ── Road strip dashes — translate downward by scroll amount
     // Using modulo so the dashes tile seamlessly
-    const dashOffset = scrollY % DASH_REPEAT;
-    dashes.style.transform = `translateY(${dashOffset}px)`;
-    dashesRight.style.transform = `translateY(${dashOffset}px)`;
+    dashTarget = scrollY * 0.7;
+
+    dashCurrent += (dashTarget - dashCurrent) * 0.08;
+
+    dashes.style.backgroundPositionY = `${dashCurrent}px`;
+    dashesRight.style.backgroundPositionY = `${dashCurrent}px`;
 
 
     // ── Speed particles
