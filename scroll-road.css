@@ -46,6 +46,7 @@
 }
 
 #road-strip-right::before {
+  display: none;
   content: '';
   position: absolute;
   inset: 0;
@@ -68,9 +69,9 @@
   background: repeating-linear-gradient(
     180deg,
     #f0d060 0px,
-    #f0d060 28px,
-    transparent 28px,
-    transparent 52px
+    #f0d060 45px,
+    transparent 45px,
+    transparent 80px
   );
   will-change: transform;
 }
