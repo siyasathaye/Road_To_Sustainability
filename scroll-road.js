@@ -14,6 +14,20 @@
 
 (function () {
   "use strict";
+  function typeText(el, text, speed = 35) {
+    el.textContent = "";
+    let i = 0;
+  
+    function step() {
+      if (i < text.length) {
+        el.textContent += text[i];
+        i++;
+        setTimeout(step, speed);
+      }
+    }
+  
+    step();
+  }
 
   // ── 1. Build the fixed road strip (left) ──────────────────────────────────
   const strip = document.createElement("div");
@@ -67,18 +81,30 @@
     }
   });
 
+
   const entranceObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove("scene-offscreen");
-          entry.target.classList.add("scene-visible");
+          const el = entry.target;
+  
+          el.classList.remove("scene-offscreen");
+          el.classList.add("scene-visible");
+  
+          // ── TYPEWRITER TRIGGER ─────────────────────────────
+          const typeEl = el.querySelector(".typewriter");
+  
+          if (typeEl && typeEl.dataset.text && !typeEl.dataset.typed) {
+            typeEl.dataset.typed = "true"; // prevents retyping on scroll
+            typeText(typeEl, typeEl.dataset.text, 30);
+          }
         }
       });
     },
     { threshold: 0.12 }
   );
   sceneInners.forEach((el) => entranceObserver.observe(el));
+
 
   // ── 6. Scene tracker for strip label ──────────────────────────────────────
   const scenes = document.querySelectorAll(".scene[id]");

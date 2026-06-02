@@ -35,18 +35,6 @@ body {
 /* ── scene header ─────────────────────────────────────────────────────────── */
 .scene-header { display: flex; flex-direction: column; gap: 0.5rem; }
 
-.scene-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #3a6b49;
-  background: #dfeadf;
-  padding: 3px 12px;
-  border-radius: 20px;
-  width: fit-content;
-}
 
 .scene-header h2 {
   font-size: clamp(1.4rem, 2.5vw, 2rem);
