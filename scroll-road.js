@@ -53,12 +53,6 @@
   sceneLabelRight.textContent = "Scene\n1";
   document.body.appendChild(sceneLabelRight);
 
-  // ── 4. Add animated dash layers to each .road-lane divider ────────────────
-  document.querySelectorAll(".road-lane").forEach((lane) => {
-    const dashLayer = document.createElement("div");
-    dashLayer.className = "scroll-dashes";
-    lane.appendChild(dashLayer);
-  });
 
   // ── 5. Mark .scene-inner elements for entrance animation ──────────────────
   // We give them the "offscreen" class initially; IntersectionObserver removes it.
@@ -181,12 +175,6 @@
     dashes.style.transform = `translateY(${dashOffset}px)`;
     dashesRight.style.transform = `translateY(${dashOffset}px)`;
 
-    // ── Horizontal .road-lane dash scroll
-    document.querySelectorAll(".road-lane .scroll-dashes").forEach((layer) => {
-      // Use scrollY to shift horizontally — lanes run left-right so horizontal parallax
-      const laneOffset = (scrollY * 0.9) % 52;
-      layer.style.transform = `translateX(${-laneOffset}px)`;
-    });
 
     // ── Speed particles
     const baseSpeed = Math.min(scrollVelocity * 0.35 + 1, 8);
