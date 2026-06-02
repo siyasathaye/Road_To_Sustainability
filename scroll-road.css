@@ -18,6 +18,60 @@
   pointer-events: none;
 }
 
+/* ── Fixed road strip (right edge) ───────────────────────────────────────── */
+#road-strip-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 52px;
+  height: 100vh;
+  background: #252520;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#road-strip-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(255,255,255,0.025) 3px,
+    rgba(255,255,255,0.025) 4px
+  );
+}
+
+#road-strip-right .lane-dashes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: 6px;
+  height: 200vh;
+  background: repeating-linear-gradient(
+    180deg,
+    #f0d060 0px,
+    #f0d060 28px,
+    transparent 28px,
+    transparent 52px
+  );
+  will-change: transform;
+}
+
+#road-strip-right .reflector-left,
+#road-strip-right .reflector-right {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: rgba(255,255,255,0.12);
+}
+#road-strip-right .reflector-left  { left: 5px; }
+#road-strip-right .reflector-right { right: 5px; }
+
 /* Asphalt texture via repeating noise lines */
 #road-strip::before {
   content: '';
@@ -77,8 +131,8 @@
 #scroll-progress {
   position: fixed;
   top: 0;
-  left: 52px; /* starts right after the road strip */
-  right: 0;
+  left: 52px; /* starts right after the left road strip */
+  right: 52px; /* ends before the right road strip */
   height: 3px;
   background: rgba(240,208,96,0.18);
   z-index: 51;
@@ -109,9 +163,27 @@
   text-transform: uppercase;
 }
 
-/* ── Offset page content so it doesn't hide behind the strip ─────────────── */
+/* Mirror scene label on right strip */
+#road-scene-label-right {
+  position: fixed;
+  right: 0;
+  bottom: 28px;
+  width: 52px;
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.35);
+  z-index: 52;
+  pointer-events: none;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* ── Offset page content so it doesn't hide behind either strip ──────────── */
 body {
   padding-left: 52px;
+  padding-right: 52px;
 }
 
 /* ── Animate the existing .road-lane dividers ─────────────────────────────── */
@@ -158,11 +230,14 @@ body {
 /* ── Responsive: hide strip on very small screens ─────────────────────────── */
 @media (max-width: 480px) {
   #road-strip,
+  #road-strip-right,
   #scroll-progress,
-  #road-scene-label {
+  #road-scene-label,
+  #road-scene-label-right {
     display: none;
   }
   body {
     padding-left: 0;
+    padding-right: 0;
   }
 }

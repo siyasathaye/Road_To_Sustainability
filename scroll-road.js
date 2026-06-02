@@ -15,7 +15,7 @@
 (function () {
   "use strict";
 
-  // ── 1. Build the fixed road strip ─────────────────────────────────────────
+  // ── 1. Build the fixed road strip (left) ──────────────────────────────────
   const strip = document.createElement("div");
   strip.id = "road-strip";
   strip.innerHTML = `
@@ -24,6 +24,16 @@
     <div class="lane-dashes" id="road-dashes"></div>
   `;
   document.body.prepend(strip);
+
+  // ── 1b. Build the fixed road strip (right) ─────────────────────────────────
+  const stripRight = document.createElement("div");
+  stripRight.id = "road-strip-right";
+  stripRight.innerHTML = `
+    <div class="reflector-left"></div>
+    <div class="reflector-right"></div>
+    <div class="lane-dashes" id="road-dashes-right"></div>
+  `;
+  document.body.appendChild(stripRight);
 
   // ── 2. Build scroll progress bar ──────────────────────────────────────────
   const progressBar = document.createElement("div");
@@ -37,6 +47,11 @@
   sceneLabel.id = "road-scene-label";
   sceneLabel.textContent = "Scene\n1";
   document.body.appendChild(sceneLabel);
+
+  const sceneLabelRight = document.createElement("div");
+  sceneLabelRight.id = "road-scene-label-right";
+  sceneLabelRight.textContent = "Scene\n1";
+  document.body.appendChild(sceneLabelRight);
 
   // ── 4. Add animated dash layers to each .road-lane divider ────────────────
   document.querySelectorAll(".road-lane").forEach((lane) => {
@@ -91,6 +106,7 @@
           // Show just "Scene N" — split on ·
           const short = name.split("·")[0].trim();
           sceneLabel.textContent = short;
+          sceneLabelRight.textContent = short;
         }
       });
     },
@@ -101,6 +117,7 @@
   // ── 7. Speed particles on the strip ───────────────────────────────────────
   const PARTICLE_COUNT = 6;
   const particles = [];
+  const particlesRight = [];
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const p = document.createElement("div");
@@ -108,6 +125,12 @@
     resetParticle(p, true);
     strip.appendChild(p);
     particles.push(p);
+
+    const pr = document.createElement("div");
+    pr.className = "road-particle";
+    resetParticle(pr, true);
+    stripRight.appendChild(pr);
+    particlesRight.push(pr);
   }
 
   function resetParticle(p, randomStart) {
@@ -125,6 +148,7 @@
 
   // ── 8. Main rAF scroll loop ────────────────────────────────────────────────
   const dashes = document.getElementById("road-dashes");
+  const dashesRight = document.getElementById("road-dashes-right");
   const DASH_REPEAT = 80; // px per dash cycle (28px dash + 24px gap)
   let lastScrollY = window.scrollY;
   let ticking = false;
@@ -155,6 +179,7 @@
     // Using modulo so the dashes tile seamlessly
     const dashOffset = scrollY % DASH_REPEAT;
     dashes.style.transform = `translateY(${dashOffset}px)`;
+    dashesRight.style.transform = `translateY(${dashOffset}px)`;
 
     // ── Horizontal .road-lane dash scroll
     document.querySelectorAll(".road-lane .scroll-dashes").forEach((layer) => {
@@ -166,6 +191,13 @@
     // ── Speed particles
     const baseSpeed = Math.min(scrollVelocity * 0.35 + 1, 8);
     particles.forEach((p) => {
+      p._y += p._speed * baseSpeed;
+      p.style.top = p._y + "px";
+      if (p._y > window.innerHeight + 30) {
+        resetParticle(p, false);
+      }
+    });
+    particlesRight.forEach((p) => {
       p._y += p._speed * baseSpeed;
       p.style.top = p._y + "px";
       if (p._y > window.innerHeight + 30) {
