@@ -10,7 +10,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 90px;
+  width: 180px;
   height: 100vh;
   background:
   linear-gradient(
@@ -30,7 +30,7 @@
   position: fixed;
   right: 0;
   top: 0;
-  width: 90px;
+  width: 180px;
   height: 100vh;
   background:
   linear-gradient(
@@ -145,8 +145,8 @@
 #scroll-progress {
   position: fixed;
   top: 0;
-  left: 90px; /* starts right after the left road strip */
-  right: 90px; /* ends before the right road strip */
+  left: 180px; /* starts right after the left road strip */
+  right: 180px; /* ends before the right road strip */
   height: 3px;
   background: rgba(240,208,96,0.18);
   z-index: 51;
@@ -165,7 +165,7 @@
   position: fixed;
   left: 0;
   bottom: 28px;
-  width: 90px;
+  width: 180px;
   text-align: center;
   font-family: Georgia, serif;
   font-size: 9px;
@@ -182,7 +182,7 @@
   position: fixed;
   right: 0;
   bottom: 28px;
-  width: 90px;
+  width: 180px;
   text-align: center;
   font-family: Georgia, serif;
   font-size: 9px;
@@ -196,8 +196,8 @@
 
 /* ── Offset page content so it doesn't hide behind either strip ──────────── */
 body {
-  padding-left: 90px;
-  padding-right: 90px;
+  padding-left: 180px;
+  padding-right: 180px;
 }
 
 /* ── Animate the existing .road-lane dividers ─────────────────────────────── */
@@ -258,7 +258,7 @@ body {
 
 #road-strip .lane-dashes,
 #road-strip-right .lane-dashes {
-  background-size: 100% 90px;
+  background-size: 100% 180px;
 }
 
 #road-strip::after,
