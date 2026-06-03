@@ -1,145 +1,179 @@
 // ─── scene5.js ────────────────────────────────────────────────────────────────
-// Owns: recommendation cards + before/after bar chart in Scene 5.
-// Runs when STATE is updated (user submits quiz).
+// Scene 5: The Destination — recommendation cards + before/after bar chart.
+// Bar chart compares the best individual car within the user's chosen class
+// against the top 2–3 alternatives from other classes on the user's stated
+// priority (emissions or cost).
 // ─────────────────────────────────────────────────────────────────────────────
 
 (function () {
 
   window.onStateReady(function (state) {
-    const { byCarAll, byCarFiltered, vehicleClass, priority } = state;
-    if (!byCarAll || !vehicleClass) return;
+    const { byCarAll, vehicleClass, priority } = state;
+    if (!byCarAll || !vehicleClass || !priority) return;
 
     renderBars(byCarAll, vehicleClass, priority);
     renderCards(byCarAll, vehicleClass, priority);
-
-    // scroll into view after a short delay so bars animate in
-    setTimeout(() => {
-      document.getElementById("scene-5").scrollIntoView({ behavior: "smooth" });
-    }, 2400);
   });
 
-  // ── Before/after bar chart ─────────────────────────────────────────────────
+  // ── Before / after bar chart ───────────────────────────────────────────────
   function renderBars(byCarAll, vehicleClass, priority) {
     const container = document.getElementById("scene-5-bars");
     container.innerHTML = "";
 
     const metricKey   = priority === "emissions" ? "avg_co2"  : "avg_cost";
-    const metricLabel = priority === "emissions" ? "Avg CO₂ per km" : "Avg cost per km (USD)";
-    const fmt         = priority === "emissions"
-      ? d => d.toFixed(3)
-      : d => "$" + d.toFixed(3);
+    const metricLabel = priority === "emissions"
+      ? "Avg CO₂ per km (kg)"
+      : "Avg cost per km (USD)";
+    const fmt = priority === "emissions"
+      ? d => d.toFixed(4)
+      : d => "$" + d.toFixed(4);
 
-    // user's class average vs top 3 alternatives
-    const userCars = byCarAll.filter(d => d.vehicle_type === vehicleClass);
-    const userAvg  = d3.mean(userCars, d => d[metricKey]);
+    // Best car in user's class (byCarAll is sorted ascending by priority metric)
+    const userCar = byCarAll.find(d => d.vehicle_type === vehicleClass);
+    if (!userCar) return;
 
-    // top 3 cars outside user's class that are better
+    // Top alternatives from other classes that beat the user's best car
     const alternatives = byCarAll
-      .filter(d => d.vehicle_type !== vehicleClass)
+      .filter(d => d.vehicle_type !== vehicleClass &&
+                   d[metricKey] < userCar[metricKey])
       .slice(0, 3);
 
+    // If no alternatives beat user's pick, show the global top 3 from other classes
+    const altsToShow = alternatives.length
+      ? alternatives
+      : byCarAll.filter(d => d.vehicle_type !== vehicleClass).slice(0, 3);
+
     const barData = [
-      { label: `Your pick\n(${vehicleClass})`, value: userAvg, isUser: true },
-      ...alternatives.map(d => ({ label: d.car_name, value: d[metricKey], isUser: false })),
+      {
+        label: userCar.car_name,
+        sublabel: vehicleClass,
+        value: userCar[metricKey],
+        isUser: true,
+      },
+      ...altsToShow.map(d => ({
+        label: d.car_name,
+        sublabel: d.vehicle_type,
+        value: d[metricKey],
+        isUser: false,
+      })),
     ];
 
-    const W = 640, H = 260;
-    const m = { top: 28, right: 20, bottom: 48, left: 200 };
+    // ── SVG setup ────────────────────────────────────────────────────────────
+    const W = 660, H = 56 * barData.length + 90;
+    const m = { top: 32, right: 24, bottom: 52, left: 210 };
     const pw = W - m.left - m.right;
     const ph = H - m.top  - m.bottom;
 
     const svg = d3.select(container)
       .append("svg")
       .attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("role", "img")
+      .attr("aria-label", `Bar chart: ${metricLabel} comparison`)
       .style("width", "100%");
 
     const plot = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
 
-    const xScale = d3.scaleLinear()
-      .domain([0, d3.max(barData, d => d.value) * 1.15])
-      .range([0, pw]);
+    // ── Scales ───────────────────────────────────────────────────────────────
+    const xMax = d3.max(barData, d => d.value) * 1.18;
+    const xScale = d3.scaleLinear().domain([0, xMax]).range([0, pw]);
 
     const yScale = d3.scaleBand()
       .domain(barData.map(d => d.label))
       .range([0, ph])
-      .padding(0.32);
+      .padding(0.35);
 
-    // gridlines
-    plot.append("g").attr("class", "grid")
+    // ── Grid lines ───────────────────────────────────────────────────────────
+    plot.append("g")
       .call(d3.axisBottom(xScale).ticks(5).tickSize(ph).tickFormat(""))
       .call(g => g.select(".domain").remove())
-      .call(g => g.selectAll("line").attr("stroke", "#e8e0d4").attr("stroke-dasharray", "3 3"));
+      .call(g => g.selectAll("line")
+        .attr("stroke", "#e8e0d4")
+        .attr("stroke-dasharray", "3 3"));
 
-    // bars
+    // ── Bars ─────────────────────────────────────────────────────────────────
     plot.selectAll("rect.bar")
       .data(barData)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", 0)
-      .attr("y", d => yScale(d.label))
-      .attr("height", yScale.bandwidth())
-      .attr("width", 0)
-      .attr("rx", 5)
-      .attr("fill", d => d.isUser ? "#d07a28" : "#3a6b49")
-      .attr("opacity", 0.85)
-      .transition().duration(700).delay((d, i) => i * 120)
-      .attr("width", d => xScale(d.value));
+      .join("rect")
+        .attr("class", "bar")
+        .attr("x", 0)
+        .attr("y", d => yScale(d.label))
+        .attr("height", yScale.bandwidth())
+        .attr("width", 0)
+        .attr("rx", 5)
+        .attr("fill",    d => d.isUser ? "#d07a28" : "#3a6b49")
+        .attr("opacity", 0.88)
+      .transition().duration(700).delay((d, i) => i * 130)
+        .attr("width", d => xScale(d.value));
 
-    // value labels
+    // ── Value labels ──────────────────────────────────────────────────────────
     plot.selectAll("text.val")
       .data(barData)
-      .enter()
-      .append("text")
-      .attr("class", "val")
-      .attr("x", d => xScale(d.value) + 6)
-      .attr("y", d => yScale(d.label) + yScale.bandwidth() / 2 + 4)
-      .attr("font-size", "12px")
-      .attr("fill", "#5b6658")
-      .text(d => fmt(d.value))
-      .attr("opacity", 0)
-      .transition().delay((d, i) => i * 120 + 600).duration(300)
-      .attr("opacity", 1);
+      .join("text")
+        .attr("class", "val")
+        .attr("x", d => xScale(d.value) + 7)
+        .attr("y", d => yScale(d.label) + yScale.bandwidth() / 2 + 4)
+        .attr("font-size", "12px")
+        .attr("font-family", "Georgia, serif")
+        .attr("fill", "#5b6658")
+        .text(d => fmt(d.value))
+        .attr("opacity", 0)
+      .transition().delay((d, i) => i * 130 + 620).duration(280)
+        .attr("opacity", 1);
 
-    // y axis
-    plot.append("g").attr("class", "axis")
+    // ── Y axis with two-line labels ───────────────────────────────────────────
+    const yAxis = plot.append("g").attr("class", "axis")
       .call(d3.axisLeft(yScale).tickSize(0))
-      .call(g => g.select(".domain").remove())
-      .selectAll("text")
-      .attr("font-size", "12px")
-      .attr("fill", "#5b6658")
-      .each(function () {
-        // wrap long labels
-        const el = d3.select(this);
-        const words = el.text().split("\n");
-        if (words.length > 1) {
-          el.text(words[0]);
-          el.append("tspan")
-            .attr("x", -8).attr("dy", "1.1em")
-            .attr("font-size", "10px").attr("fill", "#8a9980")
-            .text(words[1]);
-        }
-      });
+      .call(g => g.select(".domain").remove());
 
-    // x axis
+    yAxis.selectAll("text").remove(); // rebuild manually for two lines
+
+    barData.forEach(d => {
+      const y = yScale(d.label) + yScale.bandwidth() / 2;
+
+      plot.append("text")
+        .attr("x", -10).attr("y", y - 5)
+        .attr("text-anchor", "end")
+        .attr("font-size", d.isUser ? "13px" : "12px")
+        .attr("font-weight", d.isUser ? "700" : "400")
+        .attr("font-family", "Georgia, serif")
+        .attr("fill", d.isUser ? "#d07a28" : "#1f2a1f")
+        .text(d.label);
+
+      plot.append("text")
+        .attr("x", -10).attr("y", y + 9)
+        .attr("text-anchor", "end")
+        .attr("font-size", "10px")
+        .attr("font-family", "Georgia, serif")
+        .attr("fill", "#8a9980")
+        .text(d.sublabel + (d.isUser ? " — your pick" : ""));
+    });
+
+    // ── X axis ───────────────────────────────────────────────────────────────
     plot.append("g").attr("class", "axis")
       .attr("transform", `translate(0,${ph})`)
       .call(d3.axisBottom(xScale).ticks(5));
 
-    // axis label
-    plot.append("text").attr("class", "axis-label")
+    plot.append("text")
       .attr("x", pw / 2).attr("y", ph + 40)
       .attr("text-anchor", "middle")
+      .attr("font-family", "Georgia, serif")
+      .attr("font-size", "12px")
+      .attr("fill", "#5b6658")
       .text(metricLabel);
 
-    // annotation arrow on user bar
-    const userD = barData[0];
-    const arrowX = xScale(userD.value) + 12;
-    const arrowY = yScale(userD.label) + yScale.bandwidth() / 2;
+    // ── "Your pick" annotation ────────────────────────────────────────────────
+    const ud = barData[0];
     plot.append("text")
-      .attr("x", arrowX + 36).attr("y", arrowY - 10)
-      .attr("font-size", "11px").attr("fill", "#d07a28").attr("font-weight", "600")
-      .text("← your current pick");
+      .attr("x", xScale(ud.value) + 10)
+      .attr("y", yScale(ud.label) - 5)
+      .attr("font-size", "11px")
+      .attr("font-family", "Georgia, serif")
+      .attr("fill", "#d07a28")
+      .attr("font-weight", "600")
+      .attr("opacity", 0)
+      .text("← your current pick")
+      .transition().delay(700 + barData.length * 130).duration(300)
+      .attr("opacity", 1);
   }
 
   // ── Recommendation cards ───────────────────────────────────────────────────
@@ -149,39 +183,43 @@
 
     const metricKey   = priority === "emissions" ? "avg_co2"  : "avg_cost";
     const metricLabel = priority === "emissions" ? "CO₂/km"   : "Cost/km";
-    const fmt         = priority === "emissions"
-      ? v => v.toFixed(3) + " g"
-      : v => "$" + v.toFixed(3);
+    const fmt = priority === "emissions"
+      ? v => v.toFixed(4) + " kg"
+      : v => "$" + v.toFixed(4);
 
-    // user's best car
-    const userBest = byCarAll.find(d => d.vehicle_type === vehicleClass);
+    const userCar = byCarAll.find(d => d.vehicle_type === vehicleClass);
 
-    // top 3 alternatives that beat the user's class on their priority
+    // Top alternatives from other classes that beat the user's best car
     const alts = byCarAll
       .filter(d => d.vehicle_type !== vehicleClass &&
-                   d[metricKey] < (userBest ? userBest[metricKey] : Infinity))
+                   d[metricKey] < (userCar ? userCar[metricKey] : Infinity))
       .slice(0, 3);
 
     if (!alts.length) {
-      container.innerHTML = `<p class="rec-empty">Great news — your chosen class is already among the best for your priority!</p>`;
+      container.innerHTML =
+        `<p class="rec-empty">Great choice — your selected class is already
+         among the best for your stated priority!</p>`;
       return;
     }
 
-    // update description
+    // Update the scene description
     const desc = document.getElementById("s5-desc");
     if (desc) {
-      const priorityWord = priority === "emissions" ? "lower CO₂ emissions" : "lower fuel cost";
-      desc.textContent = `You chose a ${vehicleClass} and care about ${priorityWord}. Here's how alternatives stack up.`;
+      const word = priority === "emissions" ? "lower CO₂ emissions" : "lower fuel cost";
+      desc.textContent =
+        `You chose a ${vehicleClass} and care about ${word}. ` +
+        `The best ${vehicleClass} in the dataset is the ${userCar ? userCar.car_name : vehicleClass}. ` +
+        `Here are alternatives that would save you more.`;
     }
 
+    const BAND_CLASS = { Good: "band-good", Average: "band-avg", Poor: "band-poor" };
+
     alts.forEach((car, i) => {
-      const saving = userBest
-        ? ((userBest[metricKey] - car[metricKey]) / userBest[metricKey] * 100).toFixed(1)
+      const saving = userCar
+        ? ((userCar[metricKey] - car[metricKey]) / userCar[metricKey] * 100).toFixed(1)
         : null;
 
-      const bandClass = {
-        Good: "band-good", Average: "band-avg", Poor: "band-poor"
-      }[car.efficiency_band] || "band-avg";
+      const band = BAND_CLASS[car.efficiency_band] || "band-avg";
 
       const card = document.createElement("div");
       card.className = `rec-card${i === 0 ? " rec-best" : ""}`;
@@ -190,11 +228,13 @@
         <div class="rec-name">${car.car_name}</div>
         <div class="rec-meta">${car.vehicle_type} · ${car.fuel_type}</div>
         <div class="rec-stats">
-          <span title="${metricLabel}">${priority === "emissions" ? "💨" : "💵"} ${fmt(car[metricKey])}</span>
+          <span title="${metricLabel}">
+            ${priority === "emissions" ? "💨" : "💵"} ${fmt(car[metricKey])}
+          </span>
           <span title="Avg mileage">🛣 ${car.avg_mileage.toFixed(1)} km/L</span>
           ${saving ? `<span class="rec-saving">↓ ${saving}% vs your pick</span>` : ""}
         </div>
-        <span class="rec-band ${bandClass}">${car.efficiency_band || "—"}</span>
+        <span class="rec-band ${band}">${car.efficiency_band || "—"}</span>
       `;
       container.appendChild(card);
     });

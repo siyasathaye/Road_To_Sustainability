@@ -38,8 +38,11 @@
 
         // show submit once all three answered
         if (window.STATE.tripCategory && window.STATE.vehicleClass && window.STATE.priority) {
-          document.getElementById("quiz-submit").hidden = false;
-          document.getElementById("quiz-error").hidden  = true;
+          const btn = document.getElementById("quiz-submit");
+          btn.hidden   = false;
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          document.getElementById("quiz-error").hidden = true;
         }
       });
     });

@@ -1,0 +1,16 @@
+/* ─── scene4.css ─────────────────────────────────────────────────────────────
+   Scene 4: The Crossroads — Crossy Road transition + slope chart
+────────────────────────────────────────────────────────────────────────────── */
+
+/* ── Crossy Road transition (overrides .crossy-lane defaults) ─────────────── */
+.crossy-lane {
+  height: 130px !important;
+  background: #111108 !important;
+}
+
+/* Keep the scene label readable on top of animated cars */
+.crossy-lane .lane-label {
+  position: relative;
+  z-index: 10;
+  text-shadow: 0 0 8px rgba(0,0,0,0.9);
+}
