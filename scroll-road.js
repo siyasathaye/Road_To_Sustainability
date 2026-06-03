@@ -56,17 +56,6 @@
   document.body.prepend(progressBar);
   const progressFill = document.getElementById("scroll-progress-fill");
 
-  // ── 3. Scene label on the strip ───────────────────────────────────────────
-  const sceneLabel = document.createElement("div");
-  sceneLabel.id = "road-scene-label";
-  sceneLabel.textContent = "Scene\n1";
-  document.body.appendChild(sceneLabel);
-
-  const sceneLabelRight = document.createElement("div");
-  sceneLabelRight.id = "road-scene-label-right";
-  sceneLabelRight.textContent = "Scene\n1";
-  document.body.appendChild(sceneLabelRight);
-
 
   // ── 5. Mark .scene-inner elements for entrance animation ──────────────────
   // We give them the "offscreen" class initially; IntersectionObserver removes it.
@@ -123,10 +112,6 @@
         if (entry.isIntersecting) {
           currentSceneId = entry.target.id;
           const name = sceneNames[currentSceneId] || currentSceneId;
-          // Show just "Scene N" — split on ·
-          const short = name.split("·")[0].trim();
-          sceneLabel.textContent = short;
-          sceneLabelRight.textContent = short;
         }
       });
     },
