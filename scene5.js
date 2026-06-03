@@ -164,14 +164,15 @@
     // ── "Your pick" annotation ────────────────────────────────────────────────
     const ud = barData[0];
     plot.append("text")
-      .attr("x", xScale(ud.value) + 10)
+      .attr("x", xScale(ud.value) - 8)
       .attr("y", yScale(ud.label) - 5)
       .attr("font-size", "11px")
       .attr("font-family", "Georgia, serif")
       .attr("fill", "#d07a28")
       .attr("font-weight", "600")
       .attr("opacity", 0)
-      .text("← your current pick")
+      .attr("text-anchor", "end")
+      .text("your current pick →")
       .transition().delay(700 + barData.length * 130).duration(300)
       .attr("opacity", 1);
   }
