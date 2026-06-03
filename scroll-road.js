@@ -187,4 +187,51 @@
     ticking = false;
 
     const scrollY = window.scrollY;
-    const maxScroll = document.documentElement.scro
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+
+    // Velocity for particle speed
+    scrollVelocity = Math.abs(scrollY - lastScrollY);
+    lastScrollY = scrollY;
+
+    // ── Progress bar
+    progressFill.style.width = (progress * 100).toFixed(2) + "%";
+
+    // ── Road strip dashes — translate downward by scroll amount
+    // Using modulo so the dashes tile seamlessly
+    dashTarget = scrollY * 0.7;
+
+    dashCurrent += (dashTarget - dashCurrent) * 0.08;
+
+    dashes.style.backgroundPositionY = `${dashCurrent}px`;
+    dashesRight.style.backgroundPositionY = `${dashCurrent}px`;
+
+
+    // ── Speed particles
+    const baseSpeed = Math.min(scrollVelocity * 0.35 + 1, 8);
+    particles.forEach((p) => {
+      p._y += p._speed * baseSpeed;
+      p.style.top = p._y + "px";
+      if (p._y > window.innerHeight + 30) {
+        resetParticle(p, false);
+      }
+    });
+    particlesRight.forEach((p) => {
+      p._y += p._speed * baseSpeed;
+      p.style.top = p._y + "px";
+      if (p._y > window.innerHeight + 30) {
+        resetParticle(p, false);
+      }
+    });
+
+    if (scrollVelocity > 0) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Kick off once to set initial state
+  update();
+
+})();
