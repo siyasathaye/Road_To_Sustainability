@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Road to Sustainability</title>
 
+  <!-- Fonts: Inter for UI, Playfair Display for headings -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="road.css" />
   <link rel="stylesheet" href="scroll-road.css" />
-  <link rel="stylesheet" href="scene2.css" /> 
+  <link rel="stylesheet" href="scene2.css" />
   <link rel="stylesheet" href="scene3.css" />
   <link rel="stylesheet" href="scene4.css" />
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -21,7 +21,7 @@
 <body>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SCENE 1 — THE DEALERSHIP  (Person 1)
+       SCENE 1 — THE DEALERSHIP
   ════════════════════════════════════════════════════════════════ -->
   <section class="scene" id="scene-1">
     <div class="scene-inner dealership">
@@ -29,7 +29,7 @@
       <div class="road-sign headline-sign">
         <p class="sign-sub">DSC 106 · Road to Sustainability</p>
         <h1>You're about to buy your<br>first car.</h1>
-        <p class="sign-body">But do you know what it'll <em>actually</em> cost you?</p>
+        <p class="sign-body">But do you know what it'll <em>actually</em> cost you — and the planet?</p>
       </div>
 
       <!-- Q1 -->
@@ -69,7 +69,12 @@
 
       <div id="quiz-error" class="quiz-error" hidden>Please answer all three questions to continue.</div>
 
-      <button class="cta-btn" id="quiz-submit" hidden>
+      <!-- 
+        FIX: removed `hidden` attribute entirely — we show/hide via CSS opacity 
+        and pointer-events instead so the button always exists in the DOM 
+        and the click handler can always attach to it.
+      -->
+      <button class="cta-btn" id="quiz-submit" style="opacity:0.38;pointer-events:none;" aria-disabled="true">
         Hit the road →
       </button>
 
@@ -78,99 +83,94 @@
 
   <!-- road lane connecting scene 1 → 2 -->
   <div class="road-lane" aria-hidden="true">
-    <div class="lane-label">Scene 2 ↓</div>
+    <div class="lane-label">Scene 2 · Cost &amp; Emissions ↓</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SCENE 2 — HITTING THE ROAD  (Person 2)
-       Drop your scatterplot into #scene-2-chart
+       SCENE 2 — HITTING THE ROAD
   ════════════════════════════════════════════════════════════════ -->
   <section class="scene" id="scene-2">
     <div class="scene-inner">
       <div class="scene-header">
-        <h2 class="typewriter" data-text="Cost vs. Emissions — where does your pick land?"></h2>        
+        <div class="scene-badge">Scene 2</div>
+        <h2 class="typewriter" data-text="Cost vs. Emissions — where does your pick land?"></h2>
         <p class="scene-desc">
           Each dot is one recorded trip, colored by fuel type.
           <strong id="s2-highlight-label">Your chosen vehicle class is highlighted.</strong>
-          Better choices sit toward the bottom-left.
+          Better choices sit toward the bottom-left corner.
         </p>
       </div>
-      <!-- Person 2: append your scatterplot SVG here -->
       <div id="scene-2-chart" class="chart-slot"></div>
       <div id="scene-2-tooltip" class="tooltip" hidden></div>
     </div>
   </section>
 
   <div class="road-lane" aria-hidden="true">
-    <div class="lane-label">Scene 3 ↓</div>
+    <div class="lane-label">Scene 3 · Trip Length ↓</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SCENE 3 — THE JOURNEY  (Person 3)
-       Drop your strip/dot plot into #scene-3-chart
+       SCENE 3 — THE JOURNEY
   ════════════════════════════════════════════════════════════════ -->
   <section class="scene" id="scene-3">
     <div class="scene-inner">
       <div class="scene-header">
-        <h2 class="typewriter" data-text="How does efficiency shift across trip lengths?"></h2>       
+        <div class="scene-badge">Scene 3</div>
+        <h2 class="typewriter" data-text="How does efficiency shift across trip lengths?"></h2>
         <p class="scene-desc">
           Each fuel type gets its own lane. Dots are individual trips, colored by efficiency band.
-          The chart starts on the trip length chosen in the quiz, then reveals the remaining trip lengths as you scroll.
+          The chart starts on the trip length you chose, then reveals the remaining trip lengths as you scroll.
         </p>
       </div>
-      <!-- Person 3: append your strip plot SVG here -->
       <div id="scene-3-chart" class="chart-slot"></div>
     </div>
   </section>
 
   <div class="road-lane crossy-lane" aria-hidden="true">
-    <div class="lane-label">Scene 4 ↓ — watch the road shift</div>
+    <div class="lane-label">Scene 4 · The Crossroads — watch the road shift ↓</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SCENE 4 — THE CROSSROADS  (Person 4)
-       Drop your slope chart into #scene-4-chart
+       SCENE 4 — THE CROSSROADS
   ════════════════════════════════════════════════════════════════ -->
   <section class="scene" id="scene-4">
     <div class="scene-inner">
       <div class="scene-header">
-        <h2 class="typewriter" data-text="Cost vs. emissions — across every vehicle class"></h2>      
+        <div class="scene-badge">Scene 4</div>
+        <h2 class="typewriter" data-text="Cost vs. emissions — across every vehicle class"></h2>
         <p class="scene-desc">
-          Your Scene 1 choice is traced through in
-          <strong id="s4-highlight-label">orange</strong>.
-          See how it compares to every other class on both dimensions.
+          Your Scene 1 choice is traced in
+          <strong id="s4-highlight-label" style="color:#d07a28;">orange ★</strong>.
+          See how it compares across every class on both dimensions simultaneously.
         </p>
       </div>
-      <!-- Person 4: append your slope chart SVG here -->
       <div id="scene-4-chart" class="chart-slot"></div>
     </div>
   </section>
 
   <div class="road-lane" aria-hidden="true">
-    <div class="lane-label">Scene 5 · Destination ↓</div>
+    <div class="lane-label">Scene 5 · Your Destination ↓</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SCENE 5 — THE DESTINATION  (Person 1)
+       SCENE 5 — THE DESTINATION
   ════════════════════════════════════════════════════════════════ -->
   <section class="scene" id="scene-5">
     <div class="scene-inner">
       <div class="scene-header">
-        <h2 class="typewriter" data-text="Here's what the data recommends for you."></h2>        
+        <div class="scene-badge">Scene 5</div>
+        <h2 class="typewriter" data-text="Here's what the data recommends for you."></h2>
         <p class="scene-desc" id="s5-desc">
           Based on your choices, here's how your selected class compares to
           better-performing alternatives — ranked by your stated priority.
         </p>
       </div>
 
-      <!-- bar comparison -->
       <div id="scene-5-bars" class="chart-slot"></div>
-
-      <!-- rec cards -->
       <div id="rec-cards" class="rec-grid"></div>
 
       <p class="rec-cta">
-        Want different results?
+        Want to explore different choices?
         <a href="#scene-1" onclick="resetQuiz()">Restart the quiz ↑</a>
       </p>
     </div>
@@ -213,13 +213,10 @@
     <span>Siya Sathaye · Juee Deshmukh · Sahar Zahir · Arushi Patra</span>
   </footer>
 
-  <!-- shared state + Scene 1 + Scene 5 logic -->
   <script src="state.js"></script>
   <script src="scene1.js"></script>
   <script src="scene5.js"></script>
   <script src="scroll-road.js"></script>
-
-  <!-- teammates drop their files here: -->
   <script src="scene2.js"></script>
   <script src="scene3.js"></script>
   <script src="scene4.js"></script>

@@ -1,6 +1,5 @@
 /* ─── road.css ──────────────────────────────────────────────────────────────
-   Styles for the 5-scene scrollytelling layout.
-   Supplements style.css (keep both files).
+   5-scene scrollytelling layout — supplements style.css
 ──────────────────────────────────────────────────────────────────────────── */
 
 /* ── page background ──────────────────────────────────────────────────────── */
@@ -29,28 +28,29 @@ body {
 
 .scene-inner.dealership {
   align-items: center;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 /* ── scene header ─────────────────────────────────────────────────────────── */
 .scene-header { display: flex; flex-direction: column; gap: 0.5rem; }
 
-
 .scene-header h2 {
   font-size: clamp(1.4rem, 2.5vw, 2rem);
   line-height: 1.2;
   margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
 }
 
 .scene-desc {
-  font-size: 1rem;
+  font-size: 0.97rem;
   color: #5b6658;
-  line-height: 1.7;
+  line-height: 1.75;
   max-width: 680px;
   margin: 0;
+  font-family: "Inter", sans-serif;
 }
 
-/* ── chart slot (teammates drop SVGs here) ────────────────────────────────── */
+/* ── chart slot ───────────────────────────────────────────────────────────── */
 .chart-slot {
   background: #fffaf2;
   border: 1px solid rgba(124,109,84,0.14);
@@ -91,15 +91,16 @@ body {
 .road-lane::after  { right: 4%; }
 
 .lane-label {
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.55);
   z-index: 1;
   font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
-/* crossy road lane gets a slightly different treatment */
+/* crossy road lane */
 .crossy-lane {
   background: linear-gradient(90deg, #2d2d2d 0%, #3a3020 50%, #2d2d2d 100%);
   height: 90px;
@@ -113,194 +114,255 @@ body {
   );
 }
 
-/* ── road signs (Scene 1) ─────────────────────────────────────────────────── */
+/* ── ROAD SIGNS — Scene 1 ─────────────────────────────────────────────────── */
 .road-sign {
-  background: #1a5c1a;
+  background: linear-gradient(145deg, #1a5c1a 0%, #154d15 100%);
   color: white;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 2rem 2.5rem;
-  box-shadow: 0 6px 0 #0e3a0e, 0 8px 24px rgba(0,0,0,0.35);
+  box-shadow:
+    0 6px 0 #0e3a0e,
+    0 10px 32px rgba(0,0,0,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.08);
   width: min(680px, 100%);
-  border: 3px solid rgba(255,255,255,0.15);
+  border: 3px solid rgba(255,255,255,0.12);
+  position: relative;
 }
 
+/* Subtle corner bolts on signs */
+.road-sign::before,
+.road-sign::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.road-sign::before { top: 12px; left: 12px; }
+.road-sign::after  { top: 12px; right: 12px; }
+
 .headline-sign {
-  background: #0e3a0e;
+  background: linear-gradient(145deg, #0e3a0e 0%, #0a2d0a 100%);
   text-align: center;
-  padding: 2.5rem 2rem;
+  padding: 2.75rem 2.5rem 2.25rem;
 }
 
 .sign-sub {
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin: 0 0 0.75rem;
+  color: rgba(255,255,255,0.5);
+  margin: 0 0 0.85rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
 .headline-sign h1 {
   font-size: clamp(1.8rem, 4vw, 3rem);
   color: white;
   line-height: 1.15;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.85rem;
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
 }
 
 .sign-body {
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.8);
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.78);
   margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
 }
-.sign-body em { color: #f0d060; font-style: normal; font-weight: 700; }
+.sign-body em { color: #f0d060; font-style: normal; font-weight: 600; }
 
-/* question signs — hidden until stagger reveal */
+/* Question signs — stagger reveal */
 .question-sign {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transform: translateY(28px) scale(0.99);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .question-sign.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .q-number {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  margin: 0 0 0.4rem;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 0.5rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
 }
 
 .q-text {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: white;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.35rem;
+  font-family: "Inter", sans-serif;
+  line-height: 1.4;
 }
 
 .sign-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
+/* ── Quiz buttons — Inter, clean pill style ───────────────────────────────── */
 .sign-btn {
   padding: 9px 20px;
-  border-radius: 24px;
-  border: 2px solid rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.9);
-  font-size: 0.9rem;
-  font-family: Georgia, serif;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.88);
+  font-size: 0.88rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s ease;
+  letter-spacing: 0.01em;
+  line-height: 1;
 }
+
 .sign-btn:hover {
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.15);
   border-color: #f0d060;
   color: #f0d060;
+  transform: translateY(-1px);
 }
+
 .sign-btn.selected {
   background: #f0d060;
   border-color: #f0d060;
   color: #1a1a0a;
   font-weight: 700;
+  box-shadow: 0 3px 12px rgba(240,208,96,0.35);
 }
 
-/* ── quiz error + CTA ─────────────────────────────────────────────────────── */
+/* ── Quiz error ───────────────────────────────────────────────────────────── */
 .quiz-error {
-  color: #f08060;
-  font-size: 0.88rem;
+  color: #f0a080;
+  font-size: 0.85rem;
   margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
+/* ── CTA button ───────────────────────────────────────────────────────────── */
 .cta-btn {
-  padding: 14px 36px;
+  padding: 15px 42px;
   background: #f0d060;
   color: #1a1a0a;
   border: none;
-  border-radius: 28px;
-  font-size: 1.05rem;
-  font-family: Georgia, serif;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 0 #c0a830, 0 6px 18px rgba(0,0,0,0.2);
-  transition: transform 0.1s, box-shadow 0.1s;
-  letter-spacing: 0.02em;
+  box-shadow: 0 4px 0 #b8a030, 0 8px 24px rgba(0,0,0,0.22);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.3s ease;
+  letter-spacing: 0.03em;
 }
-.cta-btn:hover   { transform: translateY(-2px); box-shadow: 0 6px 0 #c0a830, 0 10px 24px rgba(0,0,0,0.2); }
-.cta-btn:active  { transform: translateY(1px);  box-shadow: 0 2px 0 #c0a830; }
-.cta-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #b8a030, 0 12px 28px rgba(0,0,0,0.22);
+}
+.cta-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #b8a030;
+}
+.cta-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 0 #b8a030;
+}
 
-/* ── Scene 5 — rec cards ──────────────────────────────────────────────────── */
+/* ── Scene 5 — recommendation cards ──────────────────────────────────────── */
 .rec-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .rec-card {
   background: #fffaf2;
   border: 1px solid #d9cfbf;
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  transition: box-shadow 0.2s;
+  gap: 0.85rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+  font-family: "Inter", sans-serif;
 }
-.rec-card:hover { box-shadow: 0 6px 20px rgba(58,107,73,0.12); }
+.rec-card:hover {
+  box-shadow: 0 8px 24px rgba(58,107,73,0.13);
+  transform: translateY(-1px);
+}
 
 .rec-best {
   border-color: #3a6b49;
-  background: #f0f8f2;
+  background: linear-gradient(135deg, #f0f8f2 0%, #fffaf2 100%);
   box-shadow: 0 4px 16px rgba(58,107,73,0.14);
 }
 
 .rec-rank {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: #3a6b49;
-  min-width: 90px;
+  min-width: 92px;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-name {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #1f2a1f;
   flex: 1;
   min-width: 140px;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-meta {
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   color: #5b6658;
   min-width: 130px;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-stats {
   display: flex;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   color: #5b6658;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-saving {
   color: #3a6b49;
   font-weight: 700;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-band {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   padding: 3px 12px;
   border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
+  font-family: "Inter", sans-serif;
 }
 .band-good { background: #dff2e5; color: #2d7a4a; }
 .band-avg  { background: #fef3dd; color: #a06010; }
@@ -311,75 +373,24 @@ body {
   color: #3a6b49;
   font-style: italic;
   padding: 1rem 0;
+  font-family: "Inter", sans-serif;
 }
 
 .rec-cta {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #5b6658;
   margin-top: 0.5rem;
+  font-family: "Inter", sans-serif;
 }
 .rec-cta a {
   color: #3a6b49;
   font-weight: 700;
   text-decoration: none;
+  border-bottom: 1px solid rgba(58,107,73,0.3);
+  padding-bottom: 1px;
+  transition: border-color 0.15s;
 }
-.rec-cta a:hover { text-decoration: underline; }
+.rec-cta a:hover { border-color: #3a6b49; }
 
-/* ── axis + grid shared styles ────────────────────────────────────────────── */
-.axis text, .axis-label { fill: #5b6658; font-family: Georgia, serif; }
-.axis path, .axis line  { stroke: #b9b09f; }
-.axis-label { font-size: 12px; }
-
-/* ── writeup section ──────────────────────────────────────────────────────── */
-.writeup-card {
-  max-width: 860px;
-  margin: 4rem auto 0;
-  padding: 2.5rem;
-  background: #fffaf2;
-  border: 1px solid rgba(124,109,84,0.14);
-  border-radius: 24px;
-  box-shadow: 0 12px 32px rgba(63,57,42,0.09);
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.writeup-block h2 { margin-bottom: 0.5rem; font-size: 1.2rem; }
-.writeup-block p  { line-height: 1.75; color: #5b6658; font-size: 0.97rem; }
-
-/* ── footer ───────────────────────────────────────────────────────────────── */
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 1.25rem 2rem;
-  margin-top: 2rem;
-  font-size: 0.82rem;
-  color: #5b6658;
-  border-top: 1px solid #d9cfbf;
-}
-
-/* ── tooltip ──────────────────────────────────────────────────────────────── */
-.tooltip {
-  position: absolute;
-  pointer-events: none;
-  max-width: 270px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: rgba(28,37,30,0.96);
-  color: #f8f5ee;
-  box-shadow: 0 14px 30px rgba(16,21,17,0.28);
-  font-size: 0.88rem;
-  line-height: 1.5;
-  z-index: 20;
-}
-.tooltip[hidden] { display: none; }
-.tooltip strong  { display: block; margin-bottom: 4px; }
-
-/* ── responsive ───────────────────────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .road-sign { padding: 1.25rem 1.25rem; }
-  .scene     { padding: 2.5rem 1rem; }
-  .rec-card  { flex-direction: column; align-items: flex-start; }
-}
+/* ── Axis + grid shared ───────────────────────────────────────────────────── */
+.axis text, .axis-label { fill: #5b6658; font-family: "Inter", sans-se
