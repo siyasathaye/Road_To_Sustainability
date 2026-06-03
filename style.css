@@ -172,12 +172,4 @@ h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
   gap: 1.5rem;
 }
 
-.writeup-block h2 { margin-bottom: 0.5rem; font-family: var(--font-serif); }
-.writeup-block p  { line-height: 1.75; font-family: var(--font-sans); color: var(--muted); }
-
-@media (max-width: 800px) {
-  .page-shell { width: min(100vw - 20px, 1120px); padding-top: 20px; }
-  .hero, .controls-card, .chart-card { border-radius: 18px; }
-  .hero, .controls-card { padding: 20px; }
-  .controls-card { flex-direction: column; align-items: stretch; }
-}
+.writeup-block h2 { margin-bottom: 0.5rem; font-family: var(--fo
