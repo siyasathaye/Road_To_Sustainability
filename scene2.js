@@ -44,6 +44,19 @@
         .attr("width",  totalW)
         .attr("height", totalH);
 
+    const defs = svg.append("defs");
+    defs.append("marker")
+      .attr("id", "scene2-frontier-arrowhead")
+      .attr("viewBox", "0 0 10 10")
+      .attr("refX", 8)
+      .attr("refY", 5)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto-start-reverse")
+      .append("path")
+        .attr("d", "M 0 0 L 10 5 L 0 10 z")
+        .attr("fill", "#8b917e");
+
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -80,15 +93,29 @@
       .attr("x2", innerW * 0.28)
       .attr("y2", innerH * 0.18);
 
-    g.append("text")
+    const frontierCallout = g.append("g")
+      .attr("class", "frontier-callout")
+      .attr("transform", `translate(${innerW * 0.035}, ${innerH * 0.52})`);
+
+    frontierCallout.append("rect")
+      .attr("class", "frontier-box")
+      .attr("width", 250)
+      .attr("height", 30)
+      .attr("rx", 8)
+      .attr("ry", 8);
+
+    frontierCallout.append("text")
       .attr("class", "frontier-label")
-      .attr("x", 6)
-      .attr("y", innerH - 6)
-      .attr("fill", "#5b6658")
-      .attr("font-family", "Georgia, serif")
-      .attr("font-size", "0.75rem")
-      .attr("font-style", "italic")
-      .text("← better (lower cost + lower emissions)");
+      .attr("x", 12)
+      .attr("y", 20)
+      .text("better (lower cost + lower emissions)");
+
+    frontierCallout.append("line")
+      .attr("class", "frontier-arrow")
+      .attr("x1", 155)
+      .attr("y1", 30)
+      .attr("x2", 100)
+      .attr("y2", 78);
 
     // ── Axes ──────────────────────────────────────────────────────────────────
     // X axis
@@ -132,18 +159,44 @@
         .attr("cy", d => yScale(d.cost_per_km_usd))
         .attr("r", 5)
         .attr("fill", d => FUEL_COLORS[d.fuel_type] || "#888")
-        .attr("opacity", d => {
-          if (!chosenClass) return 0.65;
-          return d.vehicle_type === chosenClass ? 0.92 : 0.12;
-        })
-        .attr("stroke", d =>
-          chosenClass && d.vehicle_type === chosenClass
-            ? "rgba(31,42,31,0.55)"
-            : "rgba(31,42,31,0.2)"
-        )
-        .attr("stroke-width", d =>
-          chosenClass && d.vehicle_type === chosenClass ? 1.5 : 0.8
-        );
+        .attr("opacity", 0.65)
+        .attr("stroke", "rgba(31,42,31,0.2)")
+        .attr("stroke-width", 0.8);
+
+    if (chosenClass) {
+      const selected = data.filter(d => d.vehicle_type === chosenClass);
+      const highlightedTrips = Array.from(
+        d3.group(selected, d => d.fuel_type).values(),
+        (fuelTrips) => {
+          const avgX = d3.mean(fuelTrips, d => d.co2_per_km);
+          const avgY = d3.mean(fuelTrips, d => d.cost_per_km_usd);
+
+          return fuelTrips.reduce((closest, trip) => {
+            if (!closest) return trip;
+
+            const closestDistance = Math.hypot(
+              closest.co2_per_km - avgX,
+              closest.cost_per_km_usd - avgY
+            );
+            const tripDistance = Math.hypot(
+              trip.co2_per_km - avgX,
+              trip.cost_per_km_usd - avgY
+            );
+
+            return tripDistance < closestDistance ? trip : closest;
+          }, null);
+        }
+      ).filter(Boolean);
+
+      dots
+        .filter(d => highlightedTrips.includes(d))
+        .attr("fill", "#111")
+        .attr("opacity", 1)
+        .attr("r", 7)
+        .attr("stroke", "#f6f0e7")
+        .attr("stroke-width", 2.4)
+        .raise();
+    }
 
     // ── Tooltip (reuses .tooltip from style.css) ──────────────────────────────
     const tooltip = d3.select("#scene-2-tooltip");
@@ -197,41 +250,6 @@
         .style("opacity", "1")
         .transition().duration(120)
         .attr("x", xScale(co2Val));
-    }
-
-    // ── Annotation for the chosen vehicle class ───────────────────────────────
-    if (chosenClass) {
-      const selected = data.filter(d => d.vehicle_type === chosenClass);
-      if (selected.length > 0) {
-        const avgX = d3.mean(selected, d => d.co2_per_km);
-        const avgY = d3.mean(selected, d => d.cost_per_km_usd);
-        const ax   = xScale(avgX);
-        const ay   = yScale(avgY);
-
-        // Pick annotation direction to avoid clipping 
-        const flipX = ax > innerW * 0.65;
-        const flipY = ay < innerH * 0.3;
-        const dx    = flipX ? -46 : 46;
-        const dy    = flipY ? 44  : -44;
-
-        g.append("line")
-          .attr("class", "annotation-line")
-          .attr("x1", ax + (flipX ? -6 : 6))
-          .attr("y1", ay + (flipY ? 6 : -6))
-          .attr("x2", ax + dx)
-          .attr("y2", ay + dy);
-
-        g.append("text")
-          .attr("class", "annotation-text")
-          .attr("x", ax + dx + (flipX ? -4 : 4))
-          .attr("y", ay + dy + (flipY ? 14 : -4))
-          .attr("text-anchor", flipX ? "end" : "start")
-          .attr("fill", "#3a6b49")
-          .attr("font-family", "Georgia, serif")
-          .attr("font-size", "0.8rem")
-          .attr("font-weight", "700")
-          .text(`Your pick: ${chosenClass}`);
-      }
     }
 
     // ── Legend ────────────────────────────────────────────────────────────────

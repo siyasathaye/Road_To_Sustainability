@@ -72,7 +72,7 @@
 
     // Update downstream labels
     const label = document.getElementById("s2-highlight-label");
-    if (label) label.textContent = `Your pick: ${vehicleClass} — highlighted in orange.`;
+    if (label) label.textContent = "The black dots mark the most representative trip for each fuel type in your chosen vehicle class.";
     const s4label = document.getElementById("s4-highlight-label");
     if (s4label) s4label.textContent = vehicleClass + " ★";
 
@@ -140,6 +140,9 @@
     document.getElementById("quiz-error").hidden      = true;
     document.getElementById("rec-cards").innerHTML    = "";
     document.getElementById("scene-5-bars").innerHTML = "";
+
+    const label = document.getElementById("s2-highlight-label");
+    if (label) label.textContent = "The black dots mark the most representative trip for each fuel type in your chosen vehicle class.";
   };
 
 })();

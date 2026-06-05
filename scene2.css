@@ -49,19 +49,6 @@
   font-size: 0.82rem;
 }
 
-/* ── Annotation ─────────────────────────────────────────────────────────────── */
-#scene-2-chart .annotation-line {
-  stroke: var(--accent);       
-  stroke-dasharray: 4 3;
-}
-
-#scene-2-chart .annotation-text {
-  fill: var(--accent);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
 /* ── Car emoji on x-axis ─────────────────────────────────────────────────────*/
 #scene-2-chart .car-icon {
   font-size: 18px;
@@ -76,9 +63,21 @@
   stroke-dasharray: 6 4;
 }
 
+#scene-2-chart .frontier-box {
+  fill: rgba(246, 240, 231, 0.92);
+  stroke: #d7ccbb;
+  stroke-width: 1;
+}
+
 #scene-2-chart .frontier-label {
   fill: var(--muted);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 0.75rem;
   font-style: italic;
+}
+
+#scene-2-chart .frontier-arrow {
+  stroke: #8b917e;
+  stroke-width: 1.2;
+  marker-end: url(#scene2-frontier-arrowhead);
 }
