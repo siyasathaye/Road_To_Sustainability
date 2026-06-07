@@ -183,10 +183,16 @@
 
 #scene-3-chart .scene3-axis text,
 #scene-3-chart .scene3-axis-label,
-#scene-3-chart .scene3-annotation,
 #scene-3-chart .scene3-lane-summary {
   fill: #5f6a5f;
   font-family: Georgia, "Times New Roman", serif;
+}
+
+#scene-3-chart .scene3-annotation {
+  fill: #243228;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.94rem;
+  font-weight: 700;
 }
 
 #scene-3-chart .scene3-axis path,

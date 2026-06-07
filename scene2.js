@@ -81,18 +81,11 @@
         gg.select(".domain").remove();
         gg.selectAll("line")
           .attr("stroke", "#d9cfbf")
-          .attr("stroke-dasharray", "3 3")
+          .attr("stroke-dasharray", null)
           .attr("stroke-width", 0.8);
       });
 
     // ── Efficiency frontier hint (bottom-left corner label) ───────────────────
-    g.append("line")
-      .attr("class", "frontier-line")
-      .attr("x1", 0)
-      .attr("y1", innerH)
-      .attr("x2", innerW * 0.28)
-      .attr("y2", innerH * 0.18);
-
     const frontierCallout = g.append("g")
       .attr("class", "frontier-callout")
       .attr("transform", `translate(${innerW * 0.035}, ${innerH * 0.52})`);

@@ -21,7 +21,7 @@
     },
     "Medium (50–200 km)": {
       kicker: "Medium trips",
-      title: "With more distance, Mileage begins to stabilize on medium-length trips.",
+      title: "With more distance, mileage begins to stabilize on medium-length trips.",
       description: "Use this view to compare how each fuel begins to stabilize.",
     },
     "Long (200–400 km)": {
@@ -161,7 +161,6 @@
               <p class="scene3-description" id="scene3-description">
                 Your chosen trip length appears first. As the road moves beneath you, the graph updates to the remaining trip lengths.
               </p>
-              <p class="scene3-note">Rows: Petrol, Diesel, Hybrid. Farther right means better observed mileage.</p>
             </div>
             <div class="scene3-legend" id="scene3-legend" aria-hidden="true"></div>
             <div class="scene3-svg-root" id="scene3-svg-root"></div>
