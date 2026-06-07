@@ -81,7 +81,7 @@
         gg.select(".domain").remove();
         gg.selectAll("line")
           .attr("stroke", "#d9cfbf")
-          .attr("stroke-dasharray", "3 3")
+          .attr("stroke-dasharray", "none")
           .attr("stroke-width", 0.8);
       });
 
