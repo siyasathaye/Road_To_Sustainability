@@ -17,11 +17,11 @@
     "Short (<50 km)": {
       kicker: "Short trips",
       title: "Stop-and-go driving makes mileage harder to hold steady.",
-      description: "This is the city baseline. Farther right means better observed mileage.",
+      description: "This is the city baseline. Stop-and-go conditions make fuel efficiency less consistent across vehicles.",
     },
     "Medium (50–200 km)": {
       kicker: "Medium trips",
-      title: "With more distance, the same fuels settle into a different rhythm.",
+      title: "With more distance, Mileage begins to stabilize on medium-length trips.",
       description: "Use this view to compare how each fuel begins to stabilize.",
     },
     "Long (200–400 km)": {
