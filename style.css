@@ -74,6 +74,7 @@ h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
   font-family: var(--font-sans);
 }
 
+
 .team  { margin: 18px 0 10px; }
 .intro { max-width: 840px; margin: 0; }
 
@@ -181,4 +182,22 @@ h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
   .hero, .controls-card, .chart-card { border-radius: 18px; }
   .hero, .controls-card { padding: 20px; }
   .controls-card { flex-direction: column; align-items: stretch; }
+}
+
+
+.headline-sign h1 {
+  opacity: 0;
+  transform: translateX(-60px);
+  animation: driveIn 1s ease-out 0.3s forwards;
+}
+
+@keyframes driveIn {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
