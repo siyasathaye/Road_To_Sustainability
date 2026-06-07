@@ -142,8 +142,8 @@
     ).map(([, v]) => v);
 
     // ── Dimensions ────────────────────────────────────────────────────────
-    const W  = 700, H = 460;
-    const m  = { top: 72, right: 138, bottom: 52, left: 138 };
+    const W  = 720, H = 460;
+    const m  = { top: 72, right: 178, bottom: 52, left: 178 };
     const pw = W - m.left - m.right;
     const ph = H - m.top  - m.bottom;
 
@@ -281,9 +281,9 @@
           .attr("stroke-width", 1.5);
       });
 
-      // Left label (CO₂ side)
+      // Left label (CO₂ side) — kept far from tick values (which end at ~leftX-40)
       g.append("text")
-        .attr("x", leftX - 14).attr("y", y1 + 4)
+        .attr("x", leftX - 78).attr("y", y1 + 4)
         .attr("text-anchor", "end")
         .attr("fill", isUser ? USER_COLOR : "#5b6658")
         .attr("font-size", lblSize)
@@ -292,9 +292,9 @@
         .attr("opacity", lblOp)
         .text(cls.vehicle_type + suffix);
 
-      // Right label (cost side)
+      // Right label (cost side) — kept far from tick values (which start at ~rightX+8)
       g.append("text")
-        .attr("x", rightX + 14).attr("y", y2 + 4)
+        .attr("x", rightX + 78).attr("y", y2 + 4)
         .attr("text-anchor", "start")
         .attr("fill", isUser ? USER_COLOR : "#5b6658")
         .attr("font-size", lblSize)

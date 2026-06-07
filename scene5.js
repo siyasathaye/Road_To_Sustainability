@@ -59,7 +59,7 @@
     ];
 
     // ── SVG setup ────────────────────────────────────────────────────────────
-    const W = 660, H = 56 * barData.length + 90;
+    const W = 660, H = 72 * barData.length + 90;
     const m = { top: 32, right: 24, bottom: 52, left: 210 };
     const pw = W - m.left - m.right;
     const ph = H - m.top  - m.bottom;
@@ -161,20 +161,6 @@
       .attr("fill", "#5b6658")
       .text(metricLabel);
 
-    // ── "Your pick" annotation ────────────────────────────────────────────────
-    const ud = barData[0];
-    plot.append("text")
-      .attr("x", xScale(ud.value) - 8)
-      .attr("y", yScale(ud.label) - 5)
-      .attr("font-size", "11px")
-      .attr("font-family", "Georgia, serif")
-      .attr("fill", "#d07a28")
-      .attr("font-weight", "600")
-      .attr("opacity", 0)
-      .attr("text-anchor", "end")
-      .text("your current pick →")
-      .transition().delay(700 + barData.length * 130).duration(300)
-      .attr("opacity", 1);
   }
 
   // ── Recommendation cards ───────────────────────────────────────────────────
