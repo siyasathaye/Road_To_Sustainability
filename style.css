@@ -151,7 +151,8 @@ h2 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
 
 /* Typewriter cursor animation */
 .typewriter {
-  display: inline;
+  display: inline-block;
+  width: fit-content;
   border-right: 2px solid var(--accent);
   animation: blink 0.75s step-end infinite;
   font-family: var(--font-serif);
